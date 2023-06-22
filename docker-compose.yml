@@ -1,0 +1,26 @@
+version: "0.1"
+services:
+#  mysql-service:
+#    image: mysql
+#    environment:
+#      - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
+#      - MYSQL_DATABASE=osu
+#    volumes:
+#      - ./mysql.cnf:/etc/mysql/my.cnf
+#      - ./osu-data:/docker-entrypoint-initdb.d
+#    depends_on:
+#      - downloader-service
+  downloader-service:
+    image: downloader
+    build:
+      context: .
+      dockerfile: download.Dockerfile
+      args:
+        - PROJECT_DIR=${PROJECT_DIR}
+        - FILE_PATH=${FILE_PATH}
+    volumes:
+      - osu-data:/${PROJECT_DIR}
+
+
+volumes:
+  osu-data:
