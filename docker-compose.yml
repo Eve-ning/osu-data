@@ -1,15 +1,6 @@
 version: "0.1"
 services:
-#  mysql-service:
-#    image: mysql
-#    environment:
-#      - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
-#      - MYSQL_DATABASE=osu
-#    volumes:
-#      - ./mysql.cnf:/etc/mysql/my.cnf
-#      - ./osu-data:/docker-entrypoint-initdb.d
-#    depends_on:
-#      - downloader-service
+  # Download files from https://data.ppy.sh
   downloader-service:
     image: downloader
     build:
@@ -17,10 +8,27 @@ services:
       dockerfile: download.Dockerfile
       args:
         - PROJECT_DIR=${PROJECT_DIR}
-        - FILE_PATH=${FILE_PATH}
+        - FILE_URL=${FILE_URL}
+        - FILE_NAME=${FILE_NAME}
     volumes:
       - osu-data:/${PROJECT_DIR}
 
+  # Uses files from downloader-service to initialize our mysql database
+  mysql-service:
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=osu
+      - MYSQL_TCP_PORT=3307
+    volumes:
+      - ./mysql.cnf:/etc/mysql/my.cnf
+      - osu-data:/docker-entrypoint-initdb.d
+    depends_on:
+      - downloader-service
+    ports:
+      - 3307:3307
+    expose:
+      - 3307
 
 volumes:
   osu-data:
