@@ -1,9 +1,6 @@
 FROM ubuntu:20.04
-ARG PROJECT_DIR
 ARG FILE_URL
 ARG FILE_NAME
-
-WORKDIR /$PROJECT_DIR
 
 RUN apt-get update && apt-get install -y curl tar bzip2
 

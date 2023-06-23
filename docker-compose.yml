@@ -7,7 +7,6 @@ services:
       context: .
       dockerfile: download.Dockerfile
       args:
-        - PROJECT_DIR=${PROJECT_DIR}
         - FILE_URL=${FILE_URL}
         - FILE_NAME=${FILE_NAME}
     volumes:
