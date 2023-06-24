@@ -22,16 +22,16 @@ WORKDIR $WORKDIR
 
 RUN if [ -z "$FILE_NAME" ]; \
     then echo "FILE_NAME must be set. E.g. " && exit 1; \
-    else echo "Downloading from https://data.ppy.sh/${FILE_NAME}"; \
+    else echo "Downloading from ${FILE_NAME}"; \
     fi
 
 
 RUN apt-get update  \
     && apt-get install -y curl tar bzip2 \
-    && curl https://data.ppy.sh/${FILE_NAME} -o $FILE_NAME \
-    && tar -xf $FILE_NAME \
+    && curl $FILE_NAME -o $(basename "$FILE_NAME") \
+    && tar -xf $(basename "$FILE_NAME") \
     && find . -type f -name "*.sql" -exec mv -t . {} + \
-    && rm $FILE_NAME \
+    && rm $(basename "$FILE_NAME") \
     && if [ $OSU_BEATMAP_DIFFICULTY = "0" ];            then rm -f osu_beatmap_difficulty.sql; fi \
     && if [ $OSU_BEATMAPS = "0" ];                      then rm -f osu_beatmaps.sql; fi \
     && if [ $OSU_BEATMAPSETS = "0" ];                   then rm -f osu_beatmapsets.sql; fi \
