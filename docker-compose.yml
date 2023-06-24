@@ -4,6 +4,7 @@ services:
   # Download files from https://data.ppy.sh
   downloader-service:
     image: downloader
+    stdin_open: true
     build:
       context: .
       dockerfile: download.Dockerfile

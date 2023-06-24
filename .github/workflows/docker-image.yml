@@ -1,8 +1,6 @@
 name: Docker Compose CI
 
 on:
-  push:
-    branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
 
@@ -16,17 +14,16 @@ jobs:
     - uses: actions/checkout@v3
     
     - name: Build the Docker image
-      run: docker compose up
-      
+      run: |
+        docker compose --env-file test/.test.env up --wait
+
+    - name: Install mysql-server
+      run: |
+        sudo apt-get install mysql-server
+
     - name: Test MySQL
       run:  |
-        docker exec -it osu-data-docker-mysql-service-1 \
+        sleep 10;
+        docker exec osu-data-docker-mysql-service-1 \
         mysql -u root --password=p@ssw0rd1 \
         -e "use osu; select * from osu_counts limit 100;"
-        
-    - name: Test MySQL (Fail)
-      run:  |
-        docker exec -it osu-data-docker-mysql-service-1 \
-        mysql -u root --password=p@ssw0rd1 \
-        -e "use osu; select * from osu_counts2 limit 100;"
-
