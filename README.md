@@ -1,4 +1,5 @@
 # osu! Data on Docker
+[![Docker Compose CI](https://github.com/Eve-ning/osu-data-docker/actions/workflows/docker-image.yml/badge.svg)](https://github.com/Eve-ning/osu-data-docker/actions/workflows/docker-image.yml)
 
 Retrieving database data from https://data.ppy.sh/ and importing it into MySQL can be a time-consuming and complex task.
 Extracting a large `.tar.bz2` file and setting up a new MySQL installation can pose challenges, particularly for
