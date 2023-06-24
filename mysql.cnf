@@ -4,4 +4,3 @@ innodb_log_buffer_size = 256M
 innodb_redo_log_capacity = 1G
 innodb_write_io_threads = 16
 innodb_flush_log_at_trx_commit = 0
-innodb_doublewrite = 0
