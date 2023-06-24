@@ -15,7 +15,7 @@ jobs:
     
     - name: Build the Docker image
       run: |
-        docker compose --env-file=test/.test.env up 
+        docker compose --env-file test/.test.env up 
       
     - name: Test MySQL
       run:  |
