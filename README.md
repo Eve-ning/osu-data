@@ -23,7 +23,7 @@ git clone https://github.com/Eve-ning/osu-data-docker.git
       https://dev.mysql.com/doc/refman/8.0/en/validate-password.html
     - `MYSQL_PORT` exposes this MySQL container to the `localhost`. This port is used by the host to connect to
       this container.
-    - `FILE_NAME` is the file name to import from https://data.ppy.sh. The file name must include `.tar.bz2`.
+    - `FILE_NAME` is the file name to import from https://data.ppy.sh. It must include be the full URL including `.tar.bz2`.
     - `.TAR.BZ2` file names. These are the file names when you extract the `.tar.bz2`. To speed up importing,
       you can exclude importing certain files (by specifying `1`, else `0`).
       Field names are shown to describe the data they contain.
@@ -33,7 +33,7 @@ git clone https://github.com/Eve-ning/osu-data-docker.git
 ```dotenv
 MYSQL_PASSWORD=p@ssw0rd1
 MYSQL_PORT=3307
-FILE_NAME="2023_06_01_performance_catch_top_1000.tar.bz2"
+FILE_NAME="https://data.ppy.sh/2023_06_01_performance_catch_top_1000.tar.bz2"
 WORKDIR="downloads/"
 
 # Sorted By File Size, Largest First.
