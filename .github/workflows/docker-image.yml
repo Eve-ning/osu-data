@@ -16,7 +16,11 @@ jobs:
     - name: Build the Docker image
       run: |
         docker compose --env-file test/.test.env up --wait
-      
+
+    - name: Install mysql-server
+      run: |
+        sudo apt-get install mysql-server
+        
     - name: Test MySQL
       run:  |
         docker exec osu-data-docker-mysql-service-1 \
