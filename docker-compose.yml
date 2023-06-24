@@ -10,6 +10,18 @@ services:
       args:
         - FILE_NAME=${FILE_NAME}
         - WORKDIR=${WORKDIR}
+        - OSU_BEATMAP_DIFFICULTY=${OSU_BEATMAP_DIFFICULTY}
+        - OSU_BEATMAPS=${OSU_BEATMAPS}
+        - OSU_BEATMAPSETS=${OSU_BEATMAPSETS}
+        - OSU_COUNTS=${OSU_COUNTS}
+        - OSU_DIFFICULTY_ATTRIBS=${OSU_DIFFICULTY_ATTRIBS}
+        - OSU_SCORES=${OSU_SCORES}
+        - OSU_USER_STATS=${OSU_USER_STATS}
+        - OSU_BEATMAP_DIFFICULTY_ATTRIBS=${OSU_BEATMAP_DIFFICULTY_ATTRIBS}
+        - OSU_BEATMAP_FAILTIMES=${OSU_BEATMAP_FAILTIMES}
+        - OSU_BEATMAP_PERFORMANCE_BLACKLIST=${OSU_BEATMAP_PERFORMANCE_BLACKLIST}
+        - OSU_USER_BEATMAP_PLAYCOUNT=${OSU_USER_BEATMAP_PLAYCOUNT}
+        - SAMPLE_USERS=${SAMPLE_USERS}
     volumes:
       - osu-data:/${WORKDIR}
 
@@ -21,7 +33,7 @@ services:
       - MYSQL_DATABASE=osu
       - MYSQL_TCP_PORT=${MYSQL_PORT}
     volumes:
-      - ./mysql.cnf:/etc/mysql/my.cnf
+      - ./mysql.cnf:/etc/mysql/my.cnf:ro
       - osu-data:/docker-entrypoint-initdb.d
     depends_on:
       - downloader-service
