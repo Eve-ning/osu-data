@@ -1,17 +1,22 @@
-FROM ubuntu:20.04
-ARG FILE_URL
+FROM ubuntu:22.04
+
+# File name of the downloadable.
+# E.g. 2023_06_01_performance_catch_top_1000.tar.bz2
 ARG FILE_NAME
+ARG WORKDIR
 
-RUN apt-get update && apt-get install -y curl tar bzip2
+WORKDIR $WORKDIR
 
-# Download from url
-RUN curl $FILE_URL -o $FILE_NAME
+RUN if [ -z "$FILE_NAME" ]; \
+    then echo "FILE_NAME must be set. E.g. " && exit 1; \
+    else echo "Downloading from https://data.ppy.sh/${FILE_NAME}"; \
+    fi
 
-# Extract tar.bz2
-RUN tar -xf $FILE_NAME
-
-# Move extracted .sql up to docker init directory
-RUN mv **/*.sql ./
-
-RUN rm $FILE_NAME
-RUN rmdir $(basename $FILE_NAME .tar.bz2)
+RUN apt-get update  \
+    && apt-get install -y curl tar bzip2 \
+    && curl https://data.ppy.sh/${FILE_NAME} -o $FILE_NAME \
+    && tar -xf $FILE_NAME \
+    && find . -type f -name "*.sql" -exec mv -t . {} + \
+    && rm $FILE_NAME \
+    && rm -rf ./*/ \
+    && rm -rf /var/cache/apt/lists
