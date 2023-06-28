@@ -5,6 +5,7 @@ services:
   downloader-service:
     image: downloader
     stdin_open: true
+    container_name: osu-data-downloader
     build:
       context: .
       dockerfile: download.Dockerfile
@@ -29,6 +30,7 @@ services:
   # Uses files from downloader-service to initialize our mysql database
   mysql-service:
     image: mysql
+    container_name: osu-data-mysql
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=osu
@@ -38,6 +40,11 @@ services:
       - osu-data:/docker-entrypoint-initdb.d
     depends_on:
       - downloader-service
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "--silent"]
+      interval: 3s
+      timeout: 3s
+      retries: 3
     ports:
       - ${MYSQL_PORT}:${MYSQL_PORT}
     expose:
