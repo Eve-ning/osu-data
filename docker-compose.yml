@@ -11,7 +11,7 @@ services:
       dockerfile: osu.mysql.dl.Dockerfile
       args:
         - FILE_NAME=${OSU_DB}
-        - WORKDIR=/osu.mysql.dl
+        - WORKDIR=osu.mysql.dl
         - OSU_BEATMAP_DIFFICULTY=${OSU_BEATMAP_DIFFICULTY}
         - OSU_BEATMAPS=${OSU_BEATMAPS}
         - OSU_BEATMAPSETS=${OSU_BEATMAPSETS}
@@ -36,7 +36,7 @@ services:
       - MYSQL_DATABASE=osu
       - MYSQL_TCP_PORT=${MYSQL_PORT}
     volumes:
-      - ./mysql.cnf:/etc/mysql/my.cnf:ro
+      - ./osu.mysql.cnf:/etc/mysql/my.cnf:ro
       - osu.mysql.vol:/docker-entrypoint-initdb.d
     depends_on:
       - osu.mysql.dl
@@ -65,6 +65,4 @@ services:
 
 volumes:
   osu.mysql.vol:
-    name: osu.mysql.vol
   osu.files.vol:
-    name: osu.files.vol
