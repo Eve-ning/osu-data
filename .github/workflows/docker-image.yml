@@ -25,6 +25,7 @@ jobs:
 
     - name: Test MySQL
       run:  |
+        sleep 10;
         docker exec osu-data-docker-mysql-service-1 \
         mysql -u root --password=p@ssw0rd1 \
         -e "use osu; select * from osu_counts limit 100;"
