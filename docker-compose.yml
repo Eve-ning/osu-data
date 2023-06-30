@@ -27,7 +27,7 @@ services:
     volumes:
       - osu.mysql.vol:/osu.mysql.dl
 
-  # Uses files from downloader-service to initialize our mysql database
+  # Uses files from osu.mysql to initialize our mysql database
   osu.mysql:
     image: mysql
     container_name: osu.mysql
@@ -50,6 +50,9 @@ services:
     expose:
       - ${MYSQL_PORT}
 
+  # Downloads .osu files
+  # Will only be activated if profile `files` is activated.
+  # > docker compose --profile files up
   osu.files:
     image: osu.files.img
     stdin_open: true
