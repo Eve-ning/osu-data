@@ -13,19 +13,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Build the Docker image
-      run: |
-        docker compose --env-file test/.test.env up --wait
+      - name: Build the Docker image
+        run: |
+          docker compose --env-file test/.test.env up --wait
 
-    - name: Install mysql-server
-      run: |
-        sudo apt-get install mysql-server
+      - name: Install mysql-server
+        run: |
+          sudo apt-get install mysql-server
 
-    - name: Test MySQL
-      run:  |
-        sleep 10;
-        docker exec osu-data-mysql \
-        mysql -u root --password=p@ssw0rd1 \
-        -e "use osu; select * from osu_counts limit 100;"
+      - name: Test MySQL
+        run: |
+          sleep 10;
+          docker exec osu.mysql \
+          mysql -u root --password=p@ssw0rd1 \
+          -e "use osu; select * from osu_counts limit 100;"
+
+      - name: Shutdown the Docker Container
+        run: |
+          docker compose down
+
+      - name: Build Docker Image with files
+        run: |
+          docker compose --profile files --env-file test/.test.env up --wait --build
+
+      - name: Test Files Service exist
+        run: |
+          docker exec osu.files sh

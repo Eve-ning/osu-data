@@ -1,17 +1,17 @@
-version: "0.1"
+version: "3.8"
 services:
 
   # Download files from https://data.ppy.sh
-  downloader-service:
-    image: downloader
+  osu.mysql.dl:
+    image: osu.mysql.dl.img
     stdin_open: true
-    container_name: osu-data-downloader
+    container_name: osu.mysql.dl
     build:
       context: .
-      dockerfile: download.Dockerfile
+      dockerfile: osu.mysql.dl.Dockerfile
       args:
-        - FILE_NAME=${FILE_NAME}
-        - WORKDIR=${WORKDIR}
+        - FILE_NAME=${OSU_DB}
+        - WORKDIR=osu.mysql.dl
         - OSU_BEATMAP_DIFFICULTY=${OSU_BEATMAP_DIFFICULTY}
         - OSU_BEATMAPS=${OSU_BEATMAPS}
         - OSU_BEATMAPSETS=${OSU_BEATMAPSETS}
@@ -25,23 +25,23 @@ services:
         - OSU_USER_BEATMAP_PLAYCOUNT=${OSU_USER_BEATMAP_PLAYCOUNT}
         - SAMPLE_USERS=${SAMPLE_USERS}
     volumes:
-      - osu-data:/${WORKDIR}
+      - osu.mysql.vol:/osu.mysql.dl
 
-  # Uses files from downloader-service to initialize our mysql database
-  mysql-service:
+  # Uses files from osu.mysql to initialize our mysql database
+  osu.mysql:
     image: mysql
-    container_name: osu-data-mysql
+    container_name: osu.mysql
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=osu
       - MYSQL_TCP_PORT=${MYSQL_PORT}
     volumes:
-      - ./mysql.cnf:/etc/mysql/my.cnf:ro
-      - osu-data:/docker-entrypoint-initdb.d
+      - ./osu.mysql.cnf:/etc/mysql/my.cnf:ro
+      - osu.mysql.vol:/docker-entrypoint-initdb.d
     depends_on:
-      - downloader-service
+      - osu.mysql.dl
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "--silent"]
+      test: [ "CMD", "mysqladmin", "ping", "--silent" ]
       interval: 3s
       timeout: 3s
       retries: 3
@@ -50,5 +50,24 @@ services:
     expose:
       - ${MYSQL_PORT}
 
+  # Downloads .osu files
+  # Will only be activated if profile `files` is activated.
+  # > docker compose --profile files up
+  osu.files:
+    image: osu.files.img
+    stdin_open: true
+    container_name: osu.files
+    build:
+      context: .
+      dockerfile: osu.files.Dockerfile
+      args:
+        - FILE_NAME=${OSU_FILES}
+        - WORKDIR=/osu.files
+    volumes:
+      - osu.files.vol:/osu.files
+    profiles:
+      - files
+
 volumes:
-  osu-data:
+  osu.mysql.vol:
+  osu.files.vol:
