@@ -36,7 +36,7 @@ jobs:
 
       - name: Build Docker Image with files
         run: |
-          docker compose --build --profile files --env-file test/.test.env up --wait
+          docker compose --profile files --env-file test/.test.env up --wait --build
 
       - name: Test Files Service exist
         run: |
