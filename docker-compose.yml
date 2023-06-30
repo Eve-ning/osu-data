@@ -62,6 +62,8 @@ services:
         - WORKDIR=/osu.files
     volumes:
       - osu.files.vol:/osu.files
+    profiles:
+      - files
 
 volumes:
   osu.mysql.vol:
