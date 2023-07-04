@@ -39,7 +39,8 @@ services:
       - ./osu.mysql.cnf:/etc/mysql/my.cnf:ro
       - osu.mysql.vol:/docker-entrypoint-initdb.d
     depends_on:
-      - osu.mysql.dl
+      osu.mysql.dl:
+        condition: service_completed_successfully
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "--silent" ]
       interval: 3s
