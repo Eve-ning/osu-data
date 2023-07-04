@@ -40,4 +40,5 @@ RUN if [ -z "$FILE_NAME" ]; \
 RUN apk add --no-cache tar bzip2
 
 COPY osu.mysql.dl.entrypoint.sh /osu.mysql.dl.entrypoint.sh
+RUN ["chmod", "+x", "/osu.mysql.dl.entrypoint.sh"]
 ENTRYPOINT ["/osu.mysql.dl.entrypoint.sh"]
