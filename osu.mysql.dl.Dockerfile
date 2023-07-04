@@ -1,7 +1,6 @@
-FROM ubuntu:22.04
+FROM alpine:latest
 
-# File name of the downloadable.
-# E.g. 2023_06_01_performance_catch_top_1000.tar.bz2
+
 ARG FILE_NAME
 ARG WORKDIR
 ARG OSU_BEATMAP_DIFFICULTY=1
@@ -17,6 +16,19 @@ ARG OSU_BEATMAP_PERFORMANCE_BLACKLIST=0
 ARG OSU_USER_BEATMAP_PLAYCOUNT=0
 ARG SAMPLE_USERS=0
 
+ENV FILE_NAME=$FILE_NAME \
+    OSU_BEATMAP_DIFFICULTY=$OSU_BEATMAP_DIFFICULTY \
+    OSU_BEATMAPS=$OSU_BEATMAPS \
+    OSU_BEATMAPSETS=$OSU_BEATMAPSETS \
+    OSU_COUNTS=$OSU_COUNTS \
+    OSU_DIFFICULTY_ATTRIBS=$OSU_DIFFICULTY_ATTRIBS \
+    OSU_SCORES_=$OSU_SCORES_ \
+    OSU_USER_STATS_=$OSU_USER_STATS_ \
+    OSU_BEATMAP_DIFFICULTY_ATTRIBS=$OSU_BEATMAP_DIFFICULTY_ATTRIBS \
+    OSU_BEATMAP_FAILTIMES=$OSU_BEATMAP_FAILTIMES \
+    OSU_BEATMAP_PERFORMANCE_BLACKLIST=$OSU_BEATMAP_PERFORMANCE_BLACKLIST \
+    OSU_USER_BEATMAP_PLAYCOUNT=$OSU_USER_BEATMAP_PLAYCOUNT \
+    SAMPLE_USERS=$SAMPLE_USERS
 
 WORKDIR $WORKDIR
 
@@ -25,31 +37,7 @@ RUN if [ -z "$FILE_NAME" ]; \
     else echo "Downloading from ${FILE_NAME}"; \
     fi
 
-# Updates our repo
-# Downloads the file via curl
-# Extracts (tar) the file
-# Pulls all .sql files to working directory
-# Removes tar file
-# Removes all unwanted .sql files
-# Cleans up repo files
-# Cleans up folder
-RUN apt-get update  \
-    && apt-get install -y curl tar bzip2 \
-    && curl $FILE_NAME -o $(basename "$FILE_NAME") \
-    && tar -xf $(basename "$FILE_NAME") \
-    && find . -type f -name "*.sql" -exec mv -t . {} + \
-    && rm $(basename "$FILE_NAME") \
-    && if [ $OSU_BEATMAP_DIFFICULTY = "0" ];            then rm -f osu_beatmap_difficulty.sql; fi \
-    && if [ $OSU_BEATMAPS = "0" ];                      then rm -f osu_beatmaps.sql; fi \
-    && if [ $OSU_BEATMAPSETS = "0" ];                   then rm -f osu_beatmapsets.sql; fi \
-    && if [ $OSU_COUNTS = "0" ];                        then rm -f osu_counts.sql; fi \
-    && if [ $OSU_DIFFICULTY_ATTRIBS = "0" ];            then rm -f osu_difficulty_attribs.sql; fi \
-    && if [ $OSU_SCORES = "0" ];                        then rm -f osu_scores_*_high.sql; fi \
-    && if [ $OSU_USER_STATS = "0" ];                    then rm -f osu_user_stats_*.sql; fi \
-    && if [ $OSU_BEATMAP_DIFFICULTY_ATTRIBS = "0" ];    then rm -f osu_beatmap_difficulty_attribs.sql; fi \
-    && if [ $OSU_BEATMAP_FAILTIMES = "0" ];             then rm -f osu_beatmap_failtimes.sql; fi \
-    && if [ $OSU_BEATMAP_PERFORMANCE_BLACKLIST = "0" ]; then rm -f osu_beatmap_performance_blacklist.sql; fi \
-    && if [ $OSU_USER_BEATMAP_PLAYCOUNT = "0" ];        then rm -f osu_user_beatmap_playcount.sql; fi \
-    && if [ $SAMPLE_USERS = "0" ];                      then rm -f sample_users.sql; fi \
-    && rm -rf /var/cache/apt/lists \
-    && rm -rf ./*/
+RUN apk add --no-cache tar bzip2
+
+COPY osu.mysql.dl.entrypoint.sh /osu.mysql.dl.entrypoint.sh
+ENTRYPOINT ["/osu.mysql.dl.entrypoint.sh"]
