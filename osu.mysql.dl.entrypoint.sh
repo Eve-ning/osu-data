@@ -31,4 +31,4 @@ else
   if [ "$SAMPLE_USERS" = "0" ]; then rm -f sample_users.sql; fi
 fi
 
-/bin/sh
+exit 0 
