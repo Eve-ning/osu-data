@@ -52,20 +52,13 @@ docker compose --build --profile files up  # For Database AND `.osu` files.
 ```
 
 4) Connect via your favorite tools on `localhost:<MYSQL_PORT>`
-5) Shutdown the containers
+5) Stop the containers
 
 ```bash
-docker compose down
+docker compose stop
 ```
 
-## Then...
-
-- Start up the database
-
-```bash
-docker compose up  # For Database only
-docker compose --profile files up  # For Database AND `.osu` files.
-```
+## Updating Database
 
 - Change to another database.
   - Shutdown and remove volumes (volumes = MySQL data).
