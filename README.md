@@ -14,6 +14,9 @@ I've developed a docker compose project to
 
 ## Get Started
 
+**IMPORTANT**: osu! Data on Docker doesn't check the version of the files. If you're updating the data version, delete
+the volume, and it'll rebuild itself.
+
 1) Clone me
 
 ```bash
