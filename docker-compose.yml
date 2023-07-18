@@ -4,7 +4,7 @@ services:
   osu.mysql.dl:
     image: osu.mysql.dl:${VERSION}_${DATASET}
     stdin_open: true
-    container_name: osu.mysql.dl.${VERSION}_${DATASET}
+    container_name: osu.mysql.dl
     build:
       context: .
       dockerfile: osu.mysql.dl.Dockerfile
@@ -30,7 +30,7 @@ services:
   # Uses files from osu.mysql to initialize our mysql database
   osu.mysql:
     image: mysql
-    container_name: osu.mysql.${VERSION}_${DATASET}
+    container_name: osu.mysql
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=osu
@@ -57,7 +57,7 @@ services:
   osu.files:
     image: osu.files:${VERSION}
     stdin_open: true
-    container_name: osu.files.${VERSION}
+    container_name: osu.files
 
     build:
       context: .
