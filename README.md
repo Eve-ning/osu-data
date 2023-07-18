@@ -27,7 +27,7 @@ git clone https://github.com/Eve-ning/osu-data-docker.git
       https://dev.mysql.com/doc/refman/8.0/en/validate-password.html
     - `MYSQL_PORT` exposes the MySQL container the host via this port.
     - `VERSION`: database version tag from https://data.ppy.sh. It's usually `YYYY_MM_DD`
-    - `MODE`: database mode tag from https://data.ppy.sh.
+    - `DATASET`: database dataset tag from https://data.ppy.sh.
       - It must be either: `catch`, `mania`, `osu`, `taiko`, then appended with the dataset type.
         `_top_1000`, `_top_10000`, `_random_10000`.
     - `OSU_...`: To speed up importing, exclude certain files.
