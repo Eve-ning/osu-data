@@ -1,6 +1,5 @@
 version: "2.18.1"
 services:
-
   # Download files from https://data.ppy.sh
   osu.mysql.dl:
     image: osu.mysql.dl:${VERSION}_${DATASET}
@@ -38,7 +37,7 @@ services:
       - MYSQL_TCP_PORT=${MYSQL_PORT}
     volumes:
       - ./osu.mysql.cnf:/etc/mysql/my.cnf:ro
-      - osu.mysql.vol:/docker-entrypoint-initdb.d
+      - osu.mysql.vol:/docker-entrypoint-initdb.d/
     depends_on:
       osu.mysql.dl:
         condition: service_completed_successfully
