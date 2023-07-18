@@ -1,17 +1,16 @@
 version: "2.18.1"
 services:
-
   # Download files from https://data.ppy.sh
   osu.mysql.dl:
-    image: osu.mysql.dl.img
+    image: osu.mysql.dl:${VERSION}_${DATASET}
     stdin_open: true
-    container_name: osu.mysql.dl
+    container_name: osu.mysql.dl.${VERSION}_${DATASET}
     build:
       context: .
       dockerfile: osu.mysql.dl.Dockerfile
       args:
-        - FILE_NAME=${OSU_DB}
-        - WORKDIR=osu.mysql.dl
+        - DB_URL=https://data.ppy.sh/${VERSION}_performance_${DATASET}.tar.bz2
+        - CACHE_DIR=/var/cache/osu.mysql.dl/
         - OSU_BEATMAP_DIFFICULTY=${OSU_BEATMAP_DIFFICULTY}
         - OSU_BEATMAPS=${OSU_BEATMAPS}
         - OSU_BEATMAPSETS=${OSU_BEATMAPSETS}
@@ -25,19 +24,20 @@ services:
         - OSU_USER_BEATMAP_PLAYCOUNT=${OSU_USER_BEATMAP_PLAYCOUNT}
         - SAMPLE_USERS=${SAMPLE_USERS}
     volumes:
-      - osu.mysql.vol:/osu.mysql.dl
+      - osu.mysql.vol:/var/cache/osu.mysql
+      - osu.mysql.dl.vol:/var/cache/osu.mysql.dl
 
   # Uses files from osu.mysql to initialize our mysql database
   osu.mysql:
     image: mysql
-    container_name: osu.mysql
+    container_name: osu.mysql.${VERSION}_${DATASET}
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=osu
       - MYSQL_TCP_PORT=${MYSQL_PORT}
     volumes:
       - ./osu.mysql.cnf:/etc/mysql/my.cnf:ro
-      - osu.mysql.vol:/docker-entrypoint-initdb.d
+      - osu.mysql.vol:/docker-entrypoint-initdb.d/
     depends_on:
       osu.mysql.dl:
         condition: service_completed_successfully
@@ -55,14 +55,15 @@ services:
   # Will only be activated if profile `files` is activated.
   # > docker compose --profile files up
   osu.files:
-    image: osu.files.img
+    image: osu.files:${VERSION}
     stdin_open: true
-    container_name: osu.files
+    container_name: osu.files.${VERSION}
+
     build:
       context: .
       dockerfile: osu.files.Dockerfile
       args:
-        - FILE_NAME=${OSU_FILES}
+        - FILES_URL=https://data.ppy.sh/${VERSION}_osu_files.tar.bz2
         - WORKDIR=/osu.files
     volumes:
       - osu.files.vol:/osu.files
@@ -71,4 +72,5 @@ services:
 
 volumes:
   osu.mysql.vol:
+  osu.mysql.dl.vol:
   osu.files.vol:

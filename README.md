@@ -14,8 +14,7 @@ I've developed a docker compose project to
 
 ## Get Started
 
-**IMPORTANT**: osu! Data on Docker doesn't check the version of the files. If you're updating the data version, delete
-the volume, and it'll rebuild itself.
+**IMPORTANT**: You must **manually** recreate the MySQL Service if you changed the data used. 
 
 1) Clone me
 
@@ -49,7 +48,7 @@ OSU_BEATMAP_DIFFICULTY=1
 # truncated ...
 ```
 
-3) Compose Build and Up
+3) Compose Up with Build 
 
 ```bash
 docker compose up --build  # For Database only
@@ -83,24 +82,12 @@ docker compose down --volumes
 
 ### Connecting via Terminal
 
-Check the container names via
-```bash
-docker container ls
-```
-
-```
-CONTAINER ID   IMAGE             ...  NAMES
-1505b9508e3a   mysql             ...  osu.mysql
-6a916f362100   osu.mysql.dl.img  ...  osu.mysql.dl
-8db9acbd5127   osu.files.img     ...  osu.files
-```
-
-Connect to them 
+Check the container names via `exec`. Container name found with `docker container ls`
 ```bash
 docker exec -it <container_name> sh
 ```
 
-Connect via MySQL
+Connect via MySQL. Default password is `p@ssw0rd1`
 
 ```
 sh-4.4# mysql -u root -p 

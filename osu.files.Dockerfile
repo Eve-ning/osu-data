@@ -1,13 +1,14 @@
 FROM alpine:latest
-ARG FILE_NAME
+ARG FILES_URL
 ARG WORKDIR
 
-ENV FILE_NAME=$FILE_NAME
+ENV FILES_URL=$FILES_URL
 
 WORKDIR $WORKDIR
 
 RUN apk add --no-cache tar bzip2
 
-COPY osu.files.dl.entrypoint.sh /osu.files.dl.entrypoint.sh
-RUN ["chmod", "+x", "/osu.files.dl.entrypoint.sh"]
-ENTRYPOINT ["/osu.files.dl.entrypoint.sh"]
+COPY osu.files.entrypoint.sh /osu.files.entrypoint.sh
+
+RUN ["chmod", "+x", "/osu.files.entrypoint.sh"]
+ENTRYPOINT ["/osu.files.entrypoint.sh"]
