@@ -27,9 +27,11 @@ git clone https://github.com/Eve-ning/osu-data-docker.git
     - `MYSQL_PASSWORD` is exactly what it is. Note that it MUST adhere to certain requirements:
       https://dev.mysql.com/doc/refman/8.0/en/validate-password.html
     - `MYSQL_PORT` exposes the MySQL container the host via this port.
-    - `OSU_DB`: database dump file name from https://data.ppy.sh.
-    - (optional) `OSU_FILES` file dump file name from https://data.ppy.sh.
-    - `OSU_...`: To speed up importing from `OSU_DB`, you can exclude importing certain files (by specifying `1`, else `0`).
+    - `VERSION`: database version tag from https://data.ppy.sh. It's usually `YYYY_MM_DD`
+    - `MODE`: database mode tag from https://data.ppy.sh.
+      - It must be either: `catch`, `mania`, `osu`, `taiko`, then appended with the dataset type.
+        `_top_1000`, `_top_10000`, `_random_10000`.
+    - `OSU_...`: To speed up importing, exclude certain files.
       Field names are shown to describe the data they contain.
       Default settings excludes files deemed less useful and too large.
    
@@ -37,14 +39,14 @@ For example, we can download the osu!catch database with all osu! files with thi
 ```dotenv
 MYSQL_PASSWORD=p@ssw0rd1
 MYSQL_PORT=3307
-OSU_DB="https://data.ppy.sh/2023_06_01_performance_catch_top_1000.tar.bz2"
-OSU_FILES="https://data.ppy.sh/2023_06_01_osu_files.tar.bz2"
+VERSION=2023_07_01
+DATASET=catch_top_1000
 
-# Sorted By File Size, Largest First.
+# Excluded 
 OSU_BEATMAP_DIFFICULTY_ATTRIBS=0
-OSU_BEATMAP_DIFFICULTY=0
-OSU_BEATMAP_FAILTIMES=0
-...
+# Included 
+OSU_BEATMAP_DIFFICULTY=1
+# truncated ...
 ```
 
 3) Compose Build and Up
@@ -64,8 +66,8 @@ docker compose stop
 ## Updating Database
 
 - Change to another database.
-  - Shutdown and remove volumes (volumes = MySQL data).
-  - Change the `.env` `FILE_NAME` and build again.
+  - `docker compose down` to remove all containers
+  - Update `.env` and build again.
 
 ```bash
 docker compose down --volumes
