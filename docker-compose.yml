@@ -10,8 +10,8 @@ services:
       context: .
       dockerfile: osu.mysql.dl.Dockerfile
       args:
-        - FILE_NAME=${OSU_DB}
-        - WORKDIR=osu.mysql.dl
+        - DB_URL=https://data.ppy.sh/${VERSION}_performance_${DATASET}.tar.bz2
+        - CACHE_DIR=/var/cache/osu.mysql.dl/
         - OSU_BEATMAP_DIFFICULTY=${OSU_BEATMAP_DIFFICULTY}
         - OSU_BEATMAPS=${OSU_BEATMAPS}
         - OSU_BEATMAPSETS=${OSU_BEATMAPSETS}
@@ -63,7 +63,7 @@ services:
       context: .
       dockerfile: osu.files.Dockerfile
       args:
-        - FILE_NAME=${OSU_FILES}
+        - FILES_URL=https://data.ppy.sh/${VERSION}_osu_files.tar.bz2
         - WORKDIR=/osu.files
     volumes:
       - osu.files.vol:/osu.files
