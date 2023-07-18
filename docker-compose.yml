@@ -25,7 +25,8 @@ services:
         - OSU_USER_BEATMAP_PLAYCOUNT=${OSU_USER_BEATMAP_PLAYCOUNT}
         - SAMPLE_USERS=${SAMPLE_USERS}
     volumes:
-      - osu.mysql.vol:/osu.mysql.dl
+      - osu.mysql.vol:/var/cache/osu.mysql
+      - osu.mysql.dl.vol:/var/cache/osu.mysql.dl
 
   # Uses files from osu.mysql to initialize our mysql database
   osu.mysql:
@@ -72,4 +73,5 @@ services:
 
 volumes:
   osu.mysql.vol:
+  osu.mysql.dl.vol:
   osu.files.vol:
