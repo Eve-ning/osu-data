@@ -14,8 +14,7 @@ I've developed a docker compose project to
 
 ## Get Started
 
-**IMPORTANT**: osu! Data on Docker doesn't check the version of the files. If you're updating the data version, delete
-the volume, and it'll rebuild itself.
+**IMPORTANT**: You must **manually** recreate the MySQL Service if you changed the data used. 
 
 1) Clone me
 
@@ -27,8 +26,8 @@ git clone https://github.com/Eve-ning/osu-data-docker.git
     - `MYSQL_PASSWORD` is exactly what it is. Note that it MUST adhere to certain requirements:
       https://dev.mysql.com/doc/refman/8.0/en/validate-password.html
     - `MYSQL_PORT` exposes the MySQL container the host via this port.
-    - `OSU_DB`: database dump file name from https://data.ppy.sh.
-    - (optional) `OSU_FILES` file dump file name from https://data.ppy.sh.
+    - `TAG`: database version tag from https://data.ppy.sh. It's usually `YYYY_MM_DD`
+    - `MODE`: database mode tag from https://data.ppy.sh. It must be either: `catch`, `mania`, `osu`, `taiko`
     - `OSU_...`: To speed up importing from `OSU_DB`, you can exclude importing certain files (by specifying `1`, else `0`).
       Field names are shown to describe the data they contain.
       Default settings excludes files deemed less useful and too large.
@@ -37,17 +36,15 @@ For example, we can download the osu!catch database with all osu! files with thi
 ```dotenv
 MYSQL_PASSWORD=p@ssw0rd1
 MYSQL_PORT=3307
-OSU_DB="https://data.ppy.sh/2023_06_01_performance_catch_top_1000.tar.bz2"
-OSU_FILES="https://data.ppy.sh/2023_06_01_osu_files.tar.bz2"
+TAG=2023_07_01
+MODE=catch
 
-# Sorted By File Size, Largest First.
 OSU_BEATMAP_DIFFICULTY_ATTRIBS=0
 OSU_BEATMAP_DIFFICULTY=0
-OSU_BEATMAP_FAILTIMES=0
-...
+# truncated ...
 ```
 
-3) Compose Build and Up
+3) Compose Up with Build 
 
 ```bash
 docker compose up --build  # For Database only
@@ -64,7 +61,7 @@ docker compose stop
 ## Updating Database
 
 - Change to another database.
-  - Shutdown and remove volumes (volumes = MySQL data).
+  - `docker compose down` to remove all containers
   - Change the `.env` `FILE_NAME` and build again.
 
 ```bash
@@ -81,24 +78,12 @@ docker compose down --volumes
 
 ### Connecting via Terminal
 
-Check the container names via
-```bash
-docker container ls
-```
-
-```
-CONTAINER ID   IMAGE             ...  NAMES
-1505b9508e3a   mysql             ...  osu.mysql
-6a916f362100   osu.mysql.dl.img  ...  osu.mysql.dl
-8db9acbd5127   osu.files.img     ...  osu.files
-```
-
-Connect to them 
+Check the container names via `exec`. Container name found with `docker container ls`
 ```bash
 docker exec -it <container_name> sh
 ```
 
-Connect via MySQL
+Connect via MySQL. Default password is `p@ssw0rd1`
 
 ```
 sh-4.4# mysql -u root -p 
