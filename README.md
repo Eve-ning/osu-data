@@ -26,10 +26,8 @@ git clone https://github.com/Eve-ning/osu-data-docker.git
     - `MYSQL_PASSWORD` is exactly what it is. Note that it MUST adhere to certain requirements:
       https://dev.mysql.com/doc/refman/8.0/en/validate-password.html
     - `MYSQL_PORT` exposes the MySQL container the host via this port.
-    - `VERSION`: database version tag from https://data.ppy.sh. It's usually `YYYY_MM_DD`
-    - `DATASET`: database dataset tag from https://data.ppy.sh.
-      - It must be either: `catch`, `mania`, `osu`, `taiko`, then appended with the dataset type.
-        `_top_1000`, `_top_10000`, `_random_10000`.
+    - `DB_URL` is the Database URL to import from https://data.ppy.sh. Include the full URL including `.tar.bz2`.
+    - `FILES_URL` is the Files URL to import from https://data.ppy.sh. Include the full URL including `.tar.bz2`.
     - `OSU_...`: To speed up importing, exclude certain files.
       Field names are shown to describe the data they contain.
       Default settings excludes files deemed less useful and too large.
@@ -38,8 +36,8 @@ For example, we can download the osu!catch database with all osu! files with thi
 ```dotenv
 MYSQL_PASSWORD=p@ssw0rd1
 MYSQL_PORT=3307
-VERSION=2023_07_01
-DATASET=catch_top_1000
+DB_URL=https://data.ppy.sh/2023_07_01_performance_catch_top_1000.tar.bz2
+FILES_URL=https://data.ppy.sh/2023_07_01_osu_files.tar.bz2
 
 # Excluded 
 OSU_BEATMAP_DIFFICULTY_ATTRIBS=0

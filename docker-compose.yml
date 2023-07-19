@@ -2,14 +2,14 @@ version: "2.18.1"
 services:
   # Download files from https://data.ppy.sh
   osu.mysql.dl:
-    image: osu.mysql.dl:${VERSION}_${DATASET}
+    image: osu.mysql.dl
     stdin_open: true
     container_name: osu.mysql.dl
     build:
       context: .
       dockerfile: osu.mysql.dl.Dockerfile
       args:
-        - DB_URL=https://data.ppy.sh/${VERSION}_performance_${DATASET}.tar.bz2
+        - DB_URL=${DB_URL}
         - CACHE_DIR=/var/cache/osu.mysql.dl/
         - OSU_BEATMAP_DIFFICULTY=${OSU_BEATMAP_DIFFICULTY}
         - OSU_BEATMAPS=${OSU_BEATMAPS}
@@ -45,7 +45,7 @@ services:
       test: [ "CMD", "mysqladmin", "ping", "--silent" ]
       interval: 3s
       timeout: 3s
-      retries: 3
+      retries: 5
     ports:
       - ${MYSQL_PORT}:${MYSQL_PORT}
     expose:
@@ -55,7 +55,7 @@ services:
   # Will only be activated if profile `files` is activated.
   # > docker compose --profile files up
   osu.files:
-    image: osu.files:${VERSION}
+    image: osu.files
     stdin_open: true
     container_name: osu.files
 
@@ -63,7 +63,7 @@ services:
       context: .
       dockerfile: osu.files.Dockerfile
       args:
-        - FILES_URL=https://data.ppy.sh/${VERSION}_osu_files.tar.bz2
+        - FILES_URL=${FILES_URL}
         - WORKDIR=/osu.files
     volumes:
       - osu.files.vol:/osu.files
