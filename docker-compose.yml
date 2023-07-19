@@ -45,7 +45,7 @@ services:
       test: [ "CMD", "mysqladmin", "ping", "--silent" ]
       interval: 3s
       timeout: 3s
-      retries: 3
+      retries: 5
     ports:
       - ${MYSQL_PORT}:${MYSQL_PORT}
     expose:
