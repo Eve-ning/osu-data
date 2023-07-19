@@ -40,5 +40,5 @@ jobs:
 
       - name: Test Files Service & Files Folder exist
         run: |
-          docker exec osu.files sh -c 'if [ $(ls YYYY_MM_DD_osu_files/ | wc -l) -ge 1 ]; then exit 1; else exit 0; fi'
+          docker exec osu.files sh -c 'if [ $(ls YYYY_MM_DD_osu_files/ | wc -l) -ge 1 ]; then exit 0; else exit 1; fi'
 
