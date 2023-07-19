@@ -30,9 +30,9 @@ jobs:
           mysql -u root --password=p@ssw0rd1 \
           -e "use osu; select * from osu_counts limit 100;"
 
-      - name: Shutdown the Docker Container
+      - name: Stop the Docker Container
         run: |
-          docker compose down
+          docker compose stop
 
       - name: Build Docker Image with files
         run: |
