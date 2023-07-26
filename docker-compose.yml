@@ -31,6 +31,7 @@ services:
   osu.mysql:
     image: mysql
     container_name: osu.mysql
+    command: mysqld --general-log=1 --general-log-file=/tmp/mysql-general-log.log
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=osu
@@ -42,10 +43,8 @@ services:
       osu.mysql.dl:
         condition: service_completed_successfully
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "--silent" ]
-      interval: 3s
-      timeout: 3s
-      retries: 5
+      test: 'cat /tmp/mysql-general-log.log | grep "root@localhost on  using Socket"'
+      interval: 10s
     ports:
       - ${MYSQL_PORT}:${MYSQL_PORT}
     expose:
