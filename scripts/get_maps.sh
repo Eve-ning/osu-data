@@ -96,9 +96,12 @@ docker cp "$FILELIST_PATH" osu.files:"$FILELIST_PATH" || exit 1
 #   Retrieve <OSU_FILES_DIRNAME> /in osu.files/<OSU_FILES_DIRNAME>/*.osu
 OSU_FILES_DIRNAME=$(basename "$(docker exec osu.files sh -c 'echo $FILES_URL')" .tar.bz2)
 docker exec osu.files sh -c \
-  'while read beatmap_id;
-    do cp /osu.files/'"$OSU_FILES_DIRNAME"'/"$beatmap_id".osu '"$OUTPUT_FILES_DIR"'/"$beatmap_id".osu;
-    done < '"$FILELIST_PATH"';' || exit 1
+  '
+  while read beatmap_id;
+    do cp /osu.files/'"$OSU_FILES_DIRNAME"'/"$beatmap_id".osu '"$OUTPUT_FILES_DIR"'/"$beatmap_id".osu; >> /dev/null 2>&1;
+    [ $? ] && echo "Beatmap ID $beatmap_id cannot be found in osu.files";
+    done < '"$FILELIST_PATH"';
+  '
 
 echo -e "\e[32mCreating tar from $OUTPUT_DIR\e[0m"
 docker exec osu.files sh -c "cd $OUTPUT_FILES_DIR; tar -cjf ../files.tar.bz2 . || exit 1"
