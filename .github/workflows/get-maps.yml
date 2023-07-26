@@ -25,7 +25,7 @@ jobs:
 
       - name: Check if tar.bz2 has the 3 files (+1 for the tar itself)
         run: |
-          [ $(tar -tf YYYY_MM_DD_osu_files.tar.bz2 | wc -l) -eq 4 ] || exit 1
+          [ $(tar -tf my.tar.bz2 | wc -l) -eq 4 ] || exit 1
 
       - uses: actions/upload-artifact@v3
         if: always()
