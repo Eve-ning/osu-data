@@ -99,7 +99,7 @@ docker exec osu.files sh -c \
   '
   while read beatmap_id;
     do cp /osu.files/'"$OSU_FILES_DIRNAME"'/"$beatmap_id".osu '"$OUTPUT_FILES_DIR"'/"$beatmap_id".osu; >> /dev/null 2>&1;
-    [ $? ] && echo "Beatmap ID $beatmap_id cannot be found in osu.files";
+    [ $? ] || echo "Beatmap ID $beatmap_id cannot be found in osu.files";
     done < '"$FILELIST_PATH"';
   '
 

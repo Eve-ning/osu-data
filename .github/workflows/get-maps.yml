@@ -31,4 +31,4 @@ jobs:
         if: always()
         with:
           name: Temp Folder
-          path: /tmp/
+          path: /tmp/osu-data-docker/
