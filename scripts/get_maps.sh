@@ -43,14 +43,12 @@ while getopts ":q:o:h" opt; do
   esac
 done
 
-# Assert that SQL_QUERY is set
 if [ -z "$SQL_QUERY" ]; then
   echo "SQL_QUERY is not set!"
   echo "$usage"
   exit 1
 fi
 
-# Assert that OUTPUT_TAR is set
 if [ -z "$OUTPUT_TAR" ]; then
   echo "OUTPUT_TAR is not set!"
   echo "$usage"
@@ -84,27 +82,28 @@ MYSQL_PASSWORD=$(docker exec osu.mysql sh -c 'echo $MYSQL_ROOT_PASSWORD')
 # filelist.txt is a file with the beatmap_ids of *.osu files to copy
 FILELIST_PATH=$OUTPUT_DIR"/filelist.txt"
 
-# Pull file list according to query
+# Create file list locally
+echo -e "\e[32mExecuting Query\e[0m"
 FILES=$(docker exec osu.mysql mysql -u root --password="$MYSQL_PASSWORD" -D osu -N -e "$SQL_QUERY")
 echo "$FILES" >"$FILELIST_PATH"
 
-# Get osu.files directory name
-OSU_FILES_DIRNAME=$(basename "$(docker exec osu.files sh -c 'echo $FILES_URL')" .tar.bz2)
-
+# Copy file list to osu.files
 echo -e "\e[32mCopying files to osu.files directory...\e[0m"
 docker exec osu.files mkdir -p "$OUTPUT_FILES_DIR" || exit 1
 docker cp "$FILELIST_PATH" osu.files:"$FILELIST_PATH" || exit 1
 
 # Loop through filelist.txt and copy files to OUTPUT_DIR
+#   Retrieve <OSU_FILES_DIRNAME> /in osu.files/<OSU_FILES_DIRNAME>/*.osu
+OSU_FILES_DIRNAME=$(basename "$(docker exec osu.files sh -c 'echo $FILES_URL')" .tar.bz2)
 docker exec osu.files sh -c \
   'while read beatmap_id;
     do cp /osu.files/'"$OSU_FILES_DIRNAME"'/"$beatmap_id".osu '"$OUTPUT_FILES_DIR"'/"$beatmap_id".osu;
     done < '"$FILELIST_PATH"';' || exit 1
 
-echo -e "\e[32mFiles copied to $OUTPUT_DIR\e[0m"
-
-# Create tar from $OUTPUT_DIR and copy to host
 echo -e "\e[32mCreating tar from $OUTPUT_DIR\e[0m"
 docker exec osu.files sh -c "cd $OUTPUT_FILES_DIR; tar -cjf ../files.tar.bz2 . || exit 1"
+
 echo -e "\e[32mCopying tar to host\e[0m"
 docker cp osu.files:"$OUTPUT_FILES_DIR/../files.tar.bz2" "$OUTPUT_TAR" || exit 1
+
+echo -e "\e[32mCompleted!\e[0m"
