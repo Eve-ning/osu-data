@@ -1,4 +1,4 @@
-name: Docker Compose CI
+name: Docker Compose Services CI
 
 on:
   pull_request:
