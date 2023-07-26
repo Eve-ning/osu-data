@@ -4,7 +4,7 @@ Usage:
 
 Description:
   This function pulls *.osu files from the osu.files service depending on SQL_QUERY results of osu.mysql
-  and copies them to OUTPUT_TAR. Note that the files are all in the parent directory of the tar.
+  and copies them to OUTPUT_TAR as a tar.bz2
 
   This function requires osu.mysql and osu.files services to be running.
 
