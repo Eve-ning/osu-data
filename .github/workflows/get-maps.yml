@@ -32,3 +32,9 @@ jobs:
         with:
           name: Temp Folder
           path: /tmp/osu-data-docker/
+
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: Temp Folder 2
+          path: /osu.files/
