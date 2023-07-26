@@ -45,7 +45,6 @@ services:
     healthcheck:
       test: 'cat /tmp/mysql-general-log.log | grep "root@localhost on  using Socket"'
       interval: 10s
-      start_period: 10s
     ports:
       - ${MYSQL_PORT}:${MYSQL_PORT}
     expose:
