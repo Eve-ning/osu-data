@@ -30,5 +30,5 @@ jobs:
       - uses: actions/upload-artifact@v3
         if: always()
         with:
-          name: get_maps.tar.bz2
-          path: ./my.tar.bz2
+          name: Temp Folder
+          path: /tmp/
