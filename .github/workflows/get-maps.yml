@@ -21,7 +21,7 @@ jobs:
 
       - name: Run get_maps.sh
         run: |
-          ./scripts/get_maps.sh -q "SELECT beatmap_id FROM osu_beatmaps LIMIT 10;" -o ./my.tar.bz2
+          ./scripts/get_maps.sh -q "SELECT beatmap_id FROM osu_beatmaps LIMIT 100;" -o ./my.tar.bz2
 
       - name: Check if tar.bz2 exists
         run: |
