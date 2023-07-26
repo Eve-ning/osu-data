@@ -21,6 +21,7 @@ jobs:
 
       - name: Run 3 maps with get_maps.sh
         run: |
+          sleep 10;
           ./scripts/get_maps.sh -q "SELECT 1 UNION SELECT 2 UNION SELECT 3;" -o ./my.tar.bz2
 
       - name: Check if tar.bz2 has the 3 files (+1 for the tar itself)
