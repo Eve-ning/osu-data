@@ -19,13 +19,13 @@ jobs:
         run: |
           docker compose --profile files --env-file test/.test.env up --wait
 
-      - name: Run get_maps.sh
+      - name: Run 3 maps with get_maps.sh
         run: |
-          ./scripts/get_maps.sh -q "SELECT beatmap_id FROM osu_beatmaps LIMIT 100;" -o ./my.tar.bz2
+          ./scripts/get_maps.sh -q "SELECT 1 UNION SELECT 2 UNION SELECT 3;" -o ./my.tar.bz2
 
-      - name: Check if tar.bz2 exists
+      - name: Check if tar.bz2 has the 3 files (+1 for the tar itself)
         run: |
-          [ -f ./my.tar.bz2 ] || exit 1
+          [ $(tar -tf YYYY_MM_DD_osu_files.tar.bz2 | wc -l) -eq 4 ] || exit 1
 
       - uses: actions/upload-artifact@v3
         if: always()
