@@ -1,0 +1,34 @@
+name: Get Maps Script CI
+
+on:
+  pull_request:
+    branches: [ "master" ]
+  push:
+    branches: [ "master" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build the Docker image
+        run: |
+          docker compose --profile files --env-file test/.test.env up --wait
+
+      - name: Run 3 maps with get_maps.sh
+        run: |
+          ./scripts/get_maps.sh -q "SELECT 1 UNION SELECT 2 UNION SELECT 3;" -o ./my.tar.bz2
+
+      - name: Check if tar.bz2 has the 3 files (+1 for the tar itself)
+        run: |
+          [ $(tar -tf ./my.tar.bz2 | wc -l) -eq 4 ] || exit 1
+
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: Tar File
+          path: ./my.tar.bz2
