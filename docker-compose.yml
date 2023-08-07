@@ -36,14 +36,14 @@ services:
       - MYSQL_DATABASE=osu
       - MYSQL_TCP_PORT=${MYSQL_PORT}
     volumes:
-      - ./osu.mysql.ready.sh:/osu.mysql.ready.sh:ro
+      - ./osu.mysql.healthcheck.sh:/osu.mysql.healthcheck.sh:ro
       - ./osu.mysql.cnf:/etc/mysql/my.cnf:ro
       - osu.mysql.init.vol:/docker-entrypoint-initdb.d/
     depends_on:
       osu.mysql.dl:
         condition: service_completed_successfully
     healthcheck:
-      test: [ "CMD", "/bin/sh", "/osu.mysql.ready.sh" ]
+      test: [ "CMD", "/bin/sh", "/osu.mysql.healthcheck.sh" ]
       interval: 3s
       timeout: 15s
       retries: 500
@@ -68,12 +68,12 @@ services:
         - WORKDIR=/var/lib/osu/osu.files
     healthcheck:
       # Test if SERVICE_HEALTHY is 1
-      test: [ "CMD", "/bin/sh", "/osu.files.ready.sh"  ]
+      test: [ "CMD", "/bin/sh", "/osu.files.healthcheck.sh"  ]
       interval: 3s
       timeout: 15s
       retries: 500
     volumes:
-      - ./osu.files.ready.sh:/osu.files.ready.sh:ro
+      - ./osu.files.healthcheck.sh:/osu.files.healthcheck.sh:ro
       - /var/lib/osu/osu.files:/var/lib/osu/osu.files
     profiles:
       - files
