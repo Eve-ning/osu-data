@@ -58,22 +58,15 @@ fi
 # Check that osu.mysql and osu.files services are up
 echo "Checking that osu.mysql and osu.files services are up..."
 echo -n "osu.mysql: "
-if docker ps --format '{{.Names}}' | grep -q 'osu.mysql'; then
+if docker ps --filter "health=healthy" --filter "name=osu.mysql"; then
   echo -e "\e[32mOK\e[0m"
-  echo -e "\e[33mAdditionaly Check that osu.mysql has completed initialization\e[0m"
-  while ! docker logs osu.mysql 2>&1 | grep -q "MySQL init process done. Ready for start up."; do
-    echo -en "\e[33mWaiting for initialization... \e[0m"
-    echo -e "\e[34m Log: $(docker logs osu.mysql 2>&1 | tail -1)\e[0m"
-    sleep 5
-  done
-  echo -e "\e[32mosu.mysql has completed initialization\e[0m"
 else
   echo -e "\e[31mNOT RUNNING!\e[0m"
   exit 1
 fi
 
 echo -n "osu.files: "
-if docker ps --format '{{.Names}}' | grep -q 'osu.files'; then
+if docker ps --filter "health=healthy" --filter "name=osu.files"; then
   echo -e "\e[32mOK\e[0m"
 else
   echo -e "\e[31mNOT RUNNING!\e[0m"
@@ -100,12 +93,12 @@ docker exec osu.files mkdir -p "$OUTPUT_FILES_DIR" || exit 1
 docker cp "$FILELIST_PATH" osu.files:"$FILELIST_PATH" || exit 1
 
 # Loop through filelist.txt and copy files to OUTPUT_DIR
-#   Retrieve <OSU_FILES_DIRNAME> /in osu.files/<OSU_FILES_DIRNAME>/*.osu
+#   Retrieve <OSU_FILES_DIRNAME> /in /var/lib/osu/osu.files/<OSU_FILES_DIRNAME>/*.osu
 OSU_FILES_DIRNAME=$(basename "$(docker exec osu.files sh -c 'echo $FILES_URL')" .tar.bz2)
 docker exec osu.files sh -c \
   '
   while read beatmap_id;
-    do cp /osu.files/'"$OSU_FILES_DIRNAME"'/"$beatmap_id".osu '"$OUTPUT_FILES_DIR"'/"$beatmap_id".osu; >> /dev/null 2>&1;
+    do cp /var/lib/osu/osu.files/'"$OSU_FILES_DIRNAME"'/"$beatmap_id".osu '"$OUTPUT_FILES_DIR"'/"$beatmap_id".osu; >> /dev/null 2>&1;
     [ $? ] || echo "Beatmap ID $beatmap_id cannot be found in osu.files";
     done < '"$FILELIST_PATH"';
   '
