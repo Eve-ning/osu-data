@@ -6,7 +6,7 @@ DIR_NAME="$(basename "$DB_URL" .tar.bz2)"
 TAR_PATH=./"$TAR_NAME"
 DIR_PATH=./"$DIR_NAME"
 
-MYSQL_INIT_PATH=../osu.mysql.init
+MYSQL_INIT_PATH=../osu.mysql
 if [ -d "$MYSQL_INIT_PATH" ]; then
   rm "$MYSQL_INIT_PATH"/*
 fi
