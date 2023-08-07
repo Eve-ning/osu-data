@@ -84,7 +84,24 @@ FILELIST_PATH=$OUTPUT_DIR"/filelist.txt"
 
 # Create file list locally
 echo -e "\e[32mExecuting Query\e[0m"
-FILES=$(docker exec osu.mysql mysql -u root --password="$MYSQL_PASSWORD" -D osu -N -e "$SQL_QUERY")
+# Some times MySQL takes a while to initialize, or the query is invalid.
+# We'll retry a few times before giving up.
+RETRIES=5
+while [ -z "$FILES" ]; do
+  echo -n "."
+  FILES=$(docker exec osu.mysql mysql -u root --password="$MYSQL_PASSWORD" -D osu -N -e "$SQL_QUERY")
+  sleep 2
+  RETRIES=$((RETRIES - 1))
+  if [ "$RETRIES" -eq 0 ]; then
+    break
+  fi
+done
+
+if [ -z "$FILES" ]; then
+  echo -e "\e[31mNo Files Matched! Check your query, or wait a few seconds if MySQL had just initialized.\e[0m"
+  exit 1
+fi
+
 echo "$FILES" >"$FILELIST_PATH"
 
 # Copy file list to osu.files
