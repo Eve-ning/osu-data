@@ -93,12 +93,12 @@ docker exec osu.files mkdir -p "$OUTPUT_FILES_DIR" || exit 1
 docker cp "$FILELIST_PATH" osu.files:"$FILELIST_PATH" || exit 1
 
 # Loop through filelist.txt and copy files to OUTPUT_DIR
-#   Retrieve <OSU_FILES_DIRNAME> /in osu.files/<OSU_FILES_DIRNAME>/*.osu
+#   Retrieve <OSU_FILES_DIRNAME> /in /var/lib/osu/osu.files/<OSU_FILES_DIRNAME>/*.osu
 OSU_FILES_DIRNAME=$(basename "$(docker exec osu.files sh -c 'echo $FILES_URL')" .tar.bz2)
 docker exec osu.files sh -c \
   '
   while read beatmap_id;
-    do cp /osu.files/'"$OSU_FILES_DIRNAME"'/"$beatmap_id".osu '"$OUTPUT_FILES_DIR"'/"$beatmap_id".osu; >> /dev/null 2>&1;
+    do cp /var/lib/osu/osu.files/'"$OSU_FILES_DIRNAME"'/"$beatmap_id".osu '"$OUTPUT_FILES_DIR"'/"$beatmap_id".osu; >> /dev/null 2>&1;
     [ $? ] || echo "Beatmap ID $beatmap_id cannot be found in osu.files";
     done < '"$FILELIST_PATH"';
   '
