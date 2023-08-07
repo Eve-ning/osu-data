@@ -38,7 +38,7 @@ fi
 
 # Here, we guarantee that we have our .sql in $DIR_PATH
 # We move the sql files to our MySQL init path
-echo Moving Files to MySQL Initialization Directory "$MYSQL_INIT_PATH"
+echo Moving Files to MySQL Initialization Directory
 if [ "$OSU_BEATMAP_DIFFICULTY" = "1" ]; then cp "$DIR_PATH"/osu_beatmap_difficulty.sql "$MYSQL_INIT_PATH"/; fi
 if [ "$OSU_BEATMAPS" = "1" ]; then cp "$DIR_PATH"/osu_beatmaps.sql "$MYSQL_INIT_PATH"/; fi
 if [ "$OSU_BEATMAPSETS" = "1" ]; then cp "$DIR_PATH"/osu_beatmapsets.sql "$MYSQL_INIT_PATH"/; fi
