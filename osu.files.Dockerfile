@@ -9,4 +9,5 @@ COPY osu.files.entrypoint.sh /osu.files.entrypoint.sh
 COPY osu.files.healthcheck.sh /osu.files.healthcheck.sh
 
 RUN ["chmod", "+x", "/osu.files.entrypoint.sh"]
+RUN ["chmod", "+x", "/osu.files.healthcheck.sh"]
 ENTRYPOINT ["/osu.files.entrypoint.sh"]
