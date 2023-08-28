@@ -31,13 +31,14 @@ services:
   osu.mysql:
     image: mysql
     container_name: osu.mysql
+    build:
+      context: .
+      dockerfile: osu.mysql.Dockerfile
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=osu
       - MYSQL_TCP_PORT=${MYSQL_PORT}
     volumes:
-      - ./osu.mysql.healthcheck.sh:/osu.mysql.healthcheck.sh:ro
-      - ./osu.mysql.cnf:/etc/mysql/my.cnf:ro
       - osu.mysql.init.vol:/docker-entrypoint-initdb.d/
     depends_on:
       osu.mysql.dl:
@@ -59,13 +60,12 @@ services:
     image: osu.files
     stdin_open: true
     container_name: osu.files
-
     build:
       context: .
       dockerfile: osu.files.Dockerfile
       args:
         - FILES_URL=${FILES_URL}
-        - WORKDIR=/var/lib/osu/osu.files
+    working_dir: /var/lib/osu/osu.files
     healthcheck:
       # Test if SERVICE_HEALTHY is 1
       test: [ "CMD", "/bin/sh", "/osu.files.healthcheck.sh"  ]
@@ -73,7 +73,6 @@ services:
       timeout: 15s
       retries: 500
     volumes:
-      - ./osu.files.healthcheck.sh:/osu.files.healthcheck.sh:ro
       - /var/lib/osu/osu.files:/var/lib/osu/osu.files
     profiles:
       - files
