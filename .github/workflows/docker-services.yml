@@ -41,6 +41,17 @@ jobs:
           mysql -u root --password=p@ssw0rd1 \
           -e "use osu; select * from osu_counts limit 100;"
 
+      - name: Test MySQL innodb_doublewrite is OFF
+        run: |
+            if [[ $(docker exec osu.mysql mysql \
+                    -u root -pp@ssw0rd1\
+                    -e "show variables like 'innodb_doublewrite';" | grep -c OFF) -eq 1 ]]; then
+              echo -e "\e[32mMySQL innodb_doublewrite is OFF\e[0m"
+            else
+              echo -e "\e[31mMySQL innodb_doublewrite is ON\e[0m"
+              exit 1
+            fi
+
       - name: Stop the Docker Container
         run: |
           docker compose stop
