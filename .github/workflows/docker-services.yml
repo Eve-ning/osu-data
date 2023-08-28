@@ -17,6 +17,7 @@ jobs:
 
       - name: Build the Docker image
         run: |
+          rm .env
           docker compose --env-file test/.test.env up --wait
 
       - name: Install mysql-server

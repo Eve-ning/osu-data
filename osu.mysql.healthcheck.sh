@@ -3,4 +3,6 @@
 
 # If there's no matching processlist, then it's done.
 sleep 10;  # Sleep is necessary to ensure that the initialization has started.
-[ -z "$(mysql -u root -pp@ssw0rd1 -e "SELECT state FROM information_schema.processlist WHERE db='osu'")" ] && exit 0 || exit 1
+check="$(mysql -u root -pp@ssw0rd1 -e "SELECT state FROM information_schema.processlist WHERE db='osu'")"
+echo "osu.mysql Health Check: $check"
+[ -z "$check" ] && exit 0 || exit 1
