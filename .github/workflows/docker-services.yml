@@ -56,7 +56,7 @@ jobs:
 
       - name: Stop the Docker Container
         run: |
-          docker compose stop
+          docker compose --env-file test/.test.env stop
 
       - name: Build Docker Image with files
         run: |
