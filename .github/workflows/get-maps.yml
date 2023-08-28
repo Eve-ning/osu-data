@@ -17,6 +17,7 @@ jobs:
 
       - name: Build the Docker image
         run: |
+          docker compose --profile files --env-file test/.test.env build --no-cache
           docker compose --profile files --env-file test/.test.env up --wait
 
       - name: Run 3 maps with get_maps.sh
