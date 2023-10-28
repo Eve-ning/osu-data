@@ -66,7 +66,7 @@ else
 fi
 
 echo -n "osu.files: "
-if docker ps --filter "health=healthy" --filter "name=osu.files"; then
+if [ "$(docker inspect --format "{{.State.Health.Status}}" osu.files)" = "healthy" ]; then
   echo -e "\e[32mOK\e[0m"
 else
   echo -e "\e[31mNOT RUNNING!\e[0m"
