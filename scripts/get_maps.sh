@@ -58,7 +58,7 @@ fi
 # Check that osu.mysql and osu.files services are up
 echo "Checking that osu.mysql and osu.files services are up..."
 echo -n "osu.mysql: "
-if docker ps --filter "health=healthy" --filter "name=osu.mysql"; then
+if [ "$(docker inspect --format "{{.State.Health.Status}}" osu.mysql)" = "healthy" ]; then
   echo -e "\e[32mOK\e[0m"
 else
   echo -e "\e[31mNOT RUNNING!\e[0m"
