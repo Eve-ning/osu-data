@@ -16,11 +16,7 @@ I've developed a docker compose project to
 
 **IMPORTANT**: You must **manually** recreate the MySQL Service if you changed the data used. 
 
-1) Clone me
-
-```bash
-git clone https://github.com/Eve-ning/osu-data-docker.git
-```
+1) Install via pip `pip install osu-data-docker`
 
 2) Setup what you need in the `.env` file
     - `MYSQL_PASSWORD` is exactly what it is. Note that it MUST adhere to certain requirements:

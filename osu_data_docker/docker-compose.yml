@@ -30,6 +30,7 @@ services:
   # Uses files from osu.mysql to initialize our mysql database
   osu.mysql:
     image: mysql
+    restart: unless-stopped
     container_name: osu.mysql
     build:
       context: .
@@ -58,6 +59,7 @@ services:
   # > docker compose --profile files up
   osu.files:
     image: osu.files
+    restart: unless-stopped
     stdin_open: true
     container_name: osu.files
     build:
