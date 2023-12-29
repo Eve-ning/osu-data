@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "osu-data-docker"
+version = "0.1.0"
+description = "Containerize osu! data into a MySQL container"
+authors = ["Eve-ning <johnchangqi@hotmail.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [
+    { include = "osu_data_docker" }
+]
+#include = ["*.Dockerfile", "*.sh", "*.yml"]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+[tool.poetry.scripts]
+osu-data = 'osu_data_docker.main:main'
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
