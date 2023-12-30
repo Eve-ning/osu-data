@@ -1,14 +1,18 @@
 [tool.poetry]
-name = "osu-data-docker"
+name = "osu-data"
 version = "0.1.0"
-description = "Containerize osu! data into a MySQL container"
+description = "Containerize osu! data into a MySQL container."
+homepage = "https://github.com/Eve-ning/osu-data-docker"
 authors = ["Eve-ning <johnchangqi@hotmail.com>"]
 license = "MIT"
 readme = "README.md"
 packages = [
     { include = "osu_data_docker" }
 ]
-#include = ["*.Dockerfile", "*.sh", "*.yml"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+]
+
 
 [tool.poetry.dependencies]
 python = "^3.11"
