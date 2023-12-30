@@ -45,39 +45,42 @@ def main():
         "--port",
         type=int,
         help="MySQL Port number",
-        default=8080,
+        default=3308,
     )
     parser.add_argument(
         "-f",
         "--files",
-        type=str,
+        type=bool,
         help="Whether to download the .osu files or not",
-        choices=["1", "0"],
     )
 
-    opt_kwargs = dict(type=str, choices=["1", "0"])
+    opt_kwargs = lambda x: dict(
+        type=bool, default=f"{x}", help=f"Default: {x}"
+    )
 
-    parser.add_argument(
-        "--beatmap-difficulty-attribs", **opt_kwargs, default="0"
-    )
-    parser.add_argument("--beatmap-difficulty", **opt_kwargs, default="0")
-    parser.add_argument("--scores", **opt_kwargs, default="1")
-    parser.add_argument("--beatmap-failtimes", **opt_kwargs, default="0")
-    parser.add_argument("--user-beatmap-playcount", **opt_kwargs, default="0")
-    parser.add_argument("--beatmaps", **opt_kwargs, default="1")
-    parser.add_argument("--beatmapsets", **opt_kwargs, default="1")
-    parser.add_argument("--user-stats", **opt_kwargs, default="1")
-    parser.add_argument("--sample-users", **opt_kwargs, default="1")
-    parser.add_argument("--counts", **opt_kwargs, default="1")
-    parser.add_argument("--difficulty-attribs", **opt_kwargs, default="1")
-    parser.add_argument(
-        "--beatmap-performance-blacklist", **opt_kwargs, default="1"
-    )
+    parser.add_argument("--beatmap-difficulty-attribs", **opt_kwargs(False))
+    parser.add_argument("--beatmap-difficulty", **opt_kwargs(False))
+    parser.add_argument("--scores", **opt_kwargs(True))
+    parser.add_argument("--beatmap-failtimes", **opt_kwargs(False))
+    parser.add_argument("--user-beatmap-playcount", **opt_kwargs(False))
+    parser.add_argument("--beatmaps", **opt_kwargs(True))
+    parser.add_argument("--beatmapsets", **opt_kwargs(True))
+    parser.add_argument("--user-stats", **opt_kwargs(True))
+    parser.add_argument("--sample-users", **opt_kwargs(True))
+    parser.add_argument("--counts", **opt_kwargs(True))
+    parser.add_argument("--difficulty-attribs", **opt_kwargs(True))
+    parser.add_argument("--beatmap-performance-blacklist", **opt_kwargs(True))
     args = parser.parse_args()
 
     logger.info(
         f"Starting osu! Data Docker. Serving MySQL on Port {args.port}"
     )
+
+    if os.name == "nt":
+        raise OSError(
+            "osu! Data Docker is not supported on Windows. "
+            "Please use WSL2 or a Linux VM."
+        )
 
     compose_file_path = THIS_DIR / "docker-compose.yml"
 
@@ -91,22 +94,31 @@ def main():
 
     os.environ["DB_URL"] = db_url
     os.environ["FILES_URL"] = files_url
-    os.environ[
-        "OSU_BEATMAP_DIFFICULTY_ATTRIBS"
-    ] = args.beatmap_difficulty_attribs
-    os.environ["OSU_BEATMAP_DIFFICULTY"] = args.beatmap_difficulty
-    os.environ["OSU_SCORES"] = args.scores
-    os.environ["OSU_BEATMAP_FAILTIMES"] = args.beatmap_failtimes
-    os.environ["OSU_USER_BEATMAP_PLAYCOUNT"] = args.user_beatmap_playcount
-    os.environ["OSU_BEATMAPS"] = args.beatmaps
-    os.environ["OSU_BEATMAPSETS"] = args.beatmapsets
-    os.environ["OSU_USER_STATS"] = args.user_stats
-    os.environ["SAMPLE_USERS"] = args.sample_users
-    os.environ["OSU_COUNTS"] = args.counts
-    os.environ["OSU_DIFFICULTY_ATTRIBS"] = args.difficulty_attribs
-    os.environ[
-        "OSU_BEATMAP_PERFORMANCE_BLACKLIST"
-    ] = args.beatmap_performance_blacklist
+    os.environ["MYSQL_PORT"] = str(args.port)
+    os.environ["OSU_BEATMAP_DIFFICULTY_ATTRIBS"] = (
+        "1" if args.beatmap_difficulty_attribs else "0"
+    )
+    os.environ["OSU_BEATMAP_DIFFICULTY"] = (
+        "1" if args.beatmap_difficulty else "0"
+    )
+    os.environ["OSU_SCORES"] = "1" if args.scores else "0"
+    os.environ["OSU_BEATMAP_FAILTIMES"] = (
+        "1" if args.beatmap_failtimes else "0"
+    )
+    os.environ["OSU_USER_BEATMAP_PLAYCOUNT"] = (
+        "1" if args.user_beatmap_playcount else "0"
+    )
+    os.environ["OSU_BEATMAPS"] = "1" if args.beatmaps else "0"
+    os.environ["OSU_BEATMAPSETS"] = "1" if args.beatmapsets else "0"
+    os.environ["OSU_USER_STATS"] = "1" if args.user_stats else "0"
+    os.environ["SAMPLE_USERS"] = "1" if args.sample_users else "0"
+    os.environ["OSU_COUNTS"] = "1" if args.counts else "0"
+    os.environ["OSU_DIFFICULTY_ATTRIBS"] = (
+        "1" if args.difficulty_attribs else "0"
+    )
+    os.environ["OSU_BEATMAP_PERFORMANCE_BLACKLIST"] = (
+        "1" if args.beatmap_performance_blacklist else "0"
+    )
 
     # Run the Docker Compose file
     try:
