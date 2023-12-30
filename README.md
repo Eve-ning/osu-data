@@ -1,6 +1,10 @@
 # osu! Data on Docker
 [![Docker Compose CI](https://github.com/Eve-ning/osu-data-docker/actions/workflows/docker-image.yml/badge.svg)](https://github.com/Eve-ning/osu-data-docker/actions/workflows/docker-image.yml)
 
+>[!WARNING]
+> Docker must be installed and running on your machine for this to work.
+> If you're on Windows, you must have WSL2 installed and running.
+
 Retrieving database data from https://data.ppy.sh/ and importing it into MySQL can be a time-consuming and complex task.
 Extracting a large `.tar.bz2` file and setting up a new MySQL installation can pose challenges, particularly for
 developers eager to quickly explore the data.
@@ -10,7 +14,7 @@ I've developed a docker compose project to
 1) abstract away and automate these steps
 2) serve MySQL database in a virtual machine (container)
 3) (optional) additionally store all ranked/loved `.osu` files in a service
-   - This service is optional and can be activated with `docker compose --profile files up`. 
+   - This service is optional and can be activated with the `-f` tag. 
 
 ## Get Started
 
@@ -18,85 +22,42 @@ I've developed a docker compose project to
 
 1) Install via pip `pip install osu-data-docker`
 
-2) Setup what you need in the `.env` file
-    - `MYSQL_PASSWORD` is exactly what it is. Note that it MUST adhere to certain requirements:
-      https://dev.mysql.com/doc/refman/8.0/en/validate-password.html
-    - `MYSQL_PORT` exposes the MySQL container the host via this port.
-    - `DB_URL` is the Database URL to import from https://data.ppy.sh. Include the full URL including `.tar.bz2`.
-    - `FILES_URL` is the Files URL to import from https://data.ppy.sh. Include the full URL including `.tar.bz2`.
-    - `OSU_...`: To speed up importing, exclude certain files.
-      Field names are shown to describe the data they contain.
-      Default settings excludes files deemed less useful and too large.
-   
-For example, we can download the osu!catch database with all osu! files with this `.env`.
-```dotenv
-MYSQL_PASSWORD=p@ssw0rd1
-MYSQL_PORT=3307
-DB_URL=https://data.ppy.sh/2023_07_01_performance_catch_top_1000.tar.bz2
-FILES_URL=https://data.ppy.sh/2023_07_01_osu_files.tar.bz2
+2) Minimally, specify:
+   - `-m`, `--mode`:
+     The game mode to build the database with. `osu`, `taiko`, `catch` or `mania`
+   - `-v`, `--version`:
+     The database version. `top_1000`, `top_10000` or `random_10000`
+   - (Optional) `-ym`, `--year_month`: 
+     The year and month of the database in the format `YYYY_MM` Default uses the latest.
+   - (Optional) `-p`, `--port`:
+     The port to expose MySQL on. Default is `3308`
+   - (Optional) `-f`, `--files`:
+     Whether to download `.osu` files. Default is `False`
 
-# Excluded 
-OSU_BEATMAP_DIFFICULTY_ATTRIBS=0
-# Included 
-OSU_BEATMAP_DIFFICULTY=1
-# truncated ...
-```
-
-3) Compose Up with Build 
+E.g.
 
 ```bash
-docker compose up --build  # For Database only
-docker compose --build --profile files up  # For Database AND `.osu` files.
+osu-data -m osu -v top_1000 -ym 2023_08 -p 3308 -f
 ```
 
-4) Connect via your favorite tools on `localhost:<MYSQL_PORT>`
-5) Stop the containers
+Optionally, you can specify which SQL files should be loaded. 
+By default, it'll load the necessary files, which are specified below
+by the boolean
 
-```bash
-docker compose stop
-```
+- `--beatmap-difficulty-attribs`. False
+- `--beatmap-difficulty`. False
+- `--scores`. True
+- `--beatmap-failtimes`. False
+- `--user-beatmap-playcount`. False
+- `--beatmaps`. True
+- `--beatmapsets`. True
+- `--user-stats`. True
+- `--sample-users`. True
+- `--counts`. True
+- `--difficulty-attribs`. True
+- `--beatmap-performance-blacklist`. True
 
-## Updating Database
-
-- Change to another database.
-  - `docker compose down` to remove all containers
-  - Update `.env` and build again.
-
-```bash
-docker compose down --volumes
-docker compose up --build  # For Database only
-docker compose --build --profile files up  # For Database AND `.osu` files.
-```
-
-- Shutdown containers and delete volumes (volumes = MySQL data and `.osu` files)
-
-```bash
-docker compose down --volumes
-```
-
-### Connecting via Terminal
-
-Check the container names via `exec`. Container name found with `docker container ls`
-```bash
-docker exec -it <container_name> sh
-```
-
-Connect via MySQL. Default password is `p@ssw0rd1`
-
-```
-sh-4.4# mysql -u root -p 
-Enter password: <PASSWORD>
-mysql> use osu;
-mysql> select * from osu_scores_fruits_high limit 10;
-+----------+------------+---------+----------+ ...
-| score_id | beatmap_id | user_id | score    | ...
-+----------+------------+---------+----------+ ...
-|       34 |      70915 |  489271 |  5312855 | ...
-|      246 |      65233 |  489271 | 14784138 | ...
-|  2900398 |      21014 |  129806 |   329618 | ...
-|  2900572 |      29036 |  129806 |   678912 | ...
-...
-```
+3) Connect via your favorite tools on `localhost:<MYSQL_PORT>`
 
 ## `mysql.cnf`
 
