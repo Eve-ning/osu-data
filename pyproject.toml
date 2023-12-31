@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "osu-data"
-version = "0.1.0"
+version = "0.1.2"
 description = "Containerize osu! data into a MySQL container."
 homepage = "https://github.com/Eve-ning/osu-data-docker"
 authors = ["Eve-ning <johnchangqi@hotmail.com>"]
@@ -15,7 +15,7 @@ classifiers = [
 
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.10"
 
 [tool.poetry.scripts]
 osu-data = 'osu_data_docker.main:main'
