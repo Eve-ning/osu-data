@@ -12,8 +12,8 @@ logger = logging.getLogger(__name__)
 def main():
     parser = argparse.ArgumentParser(
         description="Spin up osu! Data on Docker. Any argument after FILES "
-        "are booleans that determine if the SQL file should be "
-        "loaded into the MySQL database.",
+                    "are booleans that determine if the SQL file should be "
+                    "loaded into the MySQL database.",
     )
 
     current_yyyy_mm = datetime.now().strftime("%Y_%m")
@@ -37,50 +37,47 @@ def main():
         "-ym",
         "--year-month",
         type=str,
-        help="Year and Month of the Dataset as YYYY_MM. Defaults to Current Year and Month.",
+        help=f"Year and Month of the Dataset as YYYY_MM. "
+             f"Defaults: {current_yyyy_mm}",
         default=f"{current_yyyy_mm}",
     )
     parser.add_argument(
         "-p",
         "--port",
         type=int,
-        help="MySQL Port number",
+        help="MySQL Port number. Default: 3308",
         default=3308,
     )
     parser.add_argument(
         "-f",
         "--files",
-        type=bool,
-        help="Whether to download the .osu files or not",
+        help="Whether to download the .osu files or not. Default: false",
+        action="store_true",
     )
 
     opt_kwargs = lambda x: dict(
-        type=bool, default=f"{x}", help=f"Default: {x}"
+        help=f"Default: {'true' if x == 'false' else 'false'}",
+        action=f"store_{x}",
     )
 
-    parser.add_argument("--beatmap-difficulty-attribs", **opt_kwargs(False))
-    parser.add_argument("--beatmap-difficulty", **opt_kwargs(False))
-    parser.add_argument("--scores", **opt_kwargs(True))
-    parser.add_argument("--beatmap-failtimes", **opt_kwargs(False))
-    parser.add_argument("--user-beatmap-playcount", **opt_kwargs(False))
-    parser.add_argument("--beatmaps", **opt_kwargs(True))
-    parser.add_argument("--beatmapsets", **opt_kwargs(True))
-    parser.add_argument("--user-stats", **opt_kwargs(True))
-    parser.add_argument("--sample-users", **opt_kwargs(True))
-    parser.add_argument("--counts", **opt_kwargs(True))
-    parser.add_argument("--difficulty-attribs", **opt_kwargs(True))
-    parser.add_argument("--beatmap-performance-blacklist", **opt_kwargs(True))
+    parser.add_argument("--beatmap-difficulty-attribs", **opt_kwargs("true"))
+    parser.add_argument("--beatmap-difficulty", **opt_kwargs("true"))
+    parser.add_argument("--scores", **opt_kwargs("false"))
+    parser.add_argument("--beatmap-failtimes", **opt_kwargs("true"))
+    parser.add_argument("--user-beatmap-playcount", **opt_kwargs("true"))
+    parser.add_argument("--beatmaps", **opt_kwargs("false"))
+    parser.add_argument("--beatmapsets", **opt_kwargs("false"))
+    parser.add_argument("--user-stats", **opt_kwargs("false"))
+    parser.add_argument("--sample-users", **opt_kwargs("false"))
+    parser.add_argument("--counts", **opt_kwargs("false"))
+    parser.add_argument("--difficulty-attribs", **opt_kwargs("false"))
+    parser.add_argument("--beatmap-performance-blacklist",
+                        **opt_kwargs("false"))
     args = parser.parse_args()
 
     logger.info(
         f"Starting osu! Data Docker. Serving MySQL on Port {args.port}"
     )
-
-    if os.name == "nt":
-        raise OSError(
-            "osu! Data Docker is not supported on Windows. "
-            "Please use WSL2 or a Linux VM."
-        )
 
     compose_file_path = THIS_DIR / "docker-compose.yml"
 
@@ -120,11 +117,14 @@ def main():
         "1" if args.beatmap_performance_blacklist else "0"
     )
 
+    logger.debug(args)
+
     # Run the Docker Compose file
     try:
         subprocess.run(
-            f"docker compose -f {compose_file_path.as_posix()} up"
-            f"{' --profile files' if args.files else ''}",
+            f"docker compose -f {compose_file_path.as_posix()} "
+            f"{' --profile files' if args.files else ''} "
+            f"up",
             check=True,
             shell=True,
             env=os.environ.copy(),
