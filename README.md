@@ -7,7 +7,8 @@
 Retrieves database data from https://data.ppy.sh/ and hosts it on a local MySQL
 
 (optional) additionally store all ranked/loved `.osu` files in a service
-    - This service is optional and can be activated with the `-f` tag.
+
+- This service is optional and can be activated with the `-f` tag.
 
 ## Get Started
 
@@ -54,6 +55,30 @@ by the boolean
 - `--beatmap-performance-blacklist`. True
 
 3) Connect via your favorite tools on `localhost:<MYSQL_PORT>`
+
+## Common Issues
+
+- **Docker daemon is not running**. Make sure that Docker is installed and
+  running. If you're using Docker Desktop, make sure it's actually started.
+- **MySQL Data isn't incorrect**. A few reasons
+    - *Import was abruptly stopped*. This can cause some `.sql` files to be
+      missing / incomplete. Delete the whole compose project and try again.
+    - *Didn't specify the optional flags to include files*. By default, some
+      `.sql` files are not loaded. Take a look at `osu-data -h` and specify the
+      optional flags to include them.
+    - *Data is outdated*. By default, on every re-run of `osu-data`, the data
+      is
+      preserved. To update the data, you must delete the whole compose project
+      and try again.
+- **wget: server returned error: HTTP/1.1 404 Not Found**. This happens when
+  you try to pull a `YYYY_MM` that doesn't exist. Check on https://data.ppy.sh/
+  to see which `YYYY_MM` are available.
+- **`rm: can't remove '../osu.mysql.init/*'`**: This is safe to ignore.
+- **MySQL Credentials**. By default, the MySQL doesn't have a password, so just
+  use `root` as the username and leave the password blank.
+- **No `files` service**. This is normal. The `files` service is optional and
+  can be activated with the `-f` tag. `osu-data -h` for more info.
+
 
 ## `mysql.cnf`
 

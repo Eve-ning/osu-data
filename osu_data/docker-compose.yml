@@ -25,7 +25,7 @@ services:
         - SAMPLE_USERS=${SAMPLE_USERS}
     volumes:
       - osu.mysql.init.vol:/var/lib/osu/osu.mysql.init
-      - /var/lib/osu/osu.mysql:/var/lib/osu/osu.mysql
+      - /var/lib/osu/osu.mysql/:/var/lib/osu/osu.mysql/
 
   # Uses files from osu.mysql to initialize our mysql database
   osu.mysql:
@@ -75,7 +75,7 @@ services:
       timeout: 15s
       retries: 500
     volumes:
-      - /var/lib/osu/osu.files:/var/lib/osu/osu.files
+      - /var/lib/osu/osu.files/:/var/lib/osu/osu.files/
     profiles:
       - files
 

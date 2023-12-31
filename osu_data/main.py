@@ -124,7 +124,7 @@ def main():
         subprocess.run(
             f"docker compose -f {compose_file_path.as_posix()} "
             f"{' --profile files' if args.files else ''} "
-            f"up",
+            f"up --build",
             check=True,
             shell=True,
             env=os.environ.copy(),

@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM nginx:alpine
 ARG FILES_URL
 
 ENV FILES_URL=$FILES_URL

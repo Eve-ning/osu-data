@@ -7,7 +7,7 @@ authors = ["Eve-ning <johnchangqi@hotmail.com>"]
 license = "MIT"
 readme = "README.md"
 packages = [
-    { include = "osu_data_docker" }
+    { include = "osu_data" }
 ]
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -18,7 +18,7 @@ classifiers = [
 python = "^3.10"
 
 [tool.poetry.scripts]
-osu-data = 'osu_data_docker.main:main'
+osu-data = 'osu_data.main:main'
 
 [build-system]
 requires = ["poetry-core"]
