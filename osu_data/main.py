@@ -54,6 +54,13 @@ def main():
         help="Whether to download the .osu files or not. Default: false",
         action="store_true",
     )
+    parser.add_argument(
+        "-np",
+        "--nginx-port",
+        type=int,
+        help="Port to serve the .osu files on. Default: 8080",
+        default=8080,
+    )
 
     opt_kwargs = lambda x: dict(
         help=f"Default: {'true' if x == 'false' else 'false'}",
@@ -87,11 +94,12 @@ def main():
         f"{args.mode}_"
         f"{args.version}.tar.bz2"
     )
-    files_url = f"https://data.ppy.sh/" f"{args.year_month}_osu_files.tar.bz2"
+    files_url = f"https://data.ppy.sh/" f"{args.year_month}_01_osu_files.tar.bz2"
 
     os.environ["DB_URL"] = db_url
     os.environ["FILES_URL"] = files_url
     os.environ["MYSQL_PORT"] = str(args.port)
+    os.environ["NGINX_PORT"] = str(args.nginx_port)
     os.environ["OSU_BEATMAP_DIFFICULTY_ATTRIBS"] = (
         "1" if args.beatmap_difficulty_attribs else "0"
     )

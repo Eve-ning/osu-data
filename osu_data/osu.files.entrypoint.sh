@@ -25,4 +25,5 @@ else
   rm "$TAR_PATH"
 fi
 
+nginx -g "daemon off;"
 /bin/sh
