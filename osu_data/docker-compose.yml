@@ -25,17 +25,18 @@ services:
         - SAMPLE_USERS=${SAMPLE_USERS}
     volumes:
       - osu.mysql.init.vol:/var/lib/osu/osu.mysql.init
-      - /var/lib/osu/osu.mysql:/var/lib/osu/osu.mysql
+      - /var/lib/osu/osu.mysql/:/var/lib/osu/osu.mysql/
 
   # Uses files from osu.mysql to initialize our mysql database
   osu.mysql:
     image: mysql
+    restart: unless-stopped
     container_name: osu.mysql
     build:
       context: .
       dockerfile: osu.mysql.Dockerfile
     environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ALLOW_EMPTY_PASSWORD=true
       - MYSQL_DATABASE=osu
       - MYSQL_TCP_PORT=${MYSQL_PORT}
     volumes:
@@ -58,6 +59,7 @@ services:
   # > docker compose --profile files up
   osu.files:
     image: osu.files
+    restart: unless-stopped
     stdin_open: true
     container_name: osu.files
     build:
@@ -73,9 +75,11 @@ services:
       timeout: 15s
       retries: 500
     volumes:
-      - /var/lib/osu/osu.files:/var/lib/osu/osu.files
+      - /var/lib/osu/osu.files/:/var/lib/osu/osu.files/
     profiles:
       - files
+    ports:
+      - ${NGINX_PORT}:80
 
 volumes:
   osu.mysql.init.vol:
