@@ -21,6 +21,11 @@ on:
         description: 'Version of the dataset'
         required: true
         default: 'top_1000'
+      number_of_attempts:
+        description: 'Number of attempts to wait for MySQL to be ready. 
+                      Each attempt waits for 10 seconds.'
+        required: true
+        default: 100
 
 jobs:
   build:
@@ -42,10 +47,27 @@ jobs:
 
       - name: Run osu-data
         run: |
-          python -m osu_data.main \
-          -m ${{ inputs.mode }} \
-          -v ${{ inputs.version }} \
-          -ym ${{ inputs.year_month }}
+          chmod +x ./osu_data/main.py
+          nohup python -m osu_data.main \
+            -m ${{ inputs.mode }} \
+            -v ${{ inputs.version }} \
+            -ym ${{ inputs.year_month }} &
+
+      - name: Wait for osu-data to finish
+        run: |
+          max_attempts=${{ inputs.number_of_attempts }}
+          attempt=0
+          while ((attempt < max_attempts))
+          do
+            # Check the MySQL container logs for the ready message
+            if docker logs osu.mysql 2>&1 | grep -q "/usr/sbin/mysqld: ready for connections"; then
+              exit 0
+            fi
+            echo "Waiting for MySQL to be ready... Attempt $attempt of $max_attempts"
+            sleep 10
+            ((attempt++))
+          done          
+          exit 1
 
       - name: Run create_dataset
         run: python -m osu_dataset.create_dataset
