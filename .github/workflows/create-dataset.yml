@@ -1,0 +1,65 @@
+name: Create and export dataset
+
+on:
+  workflow_dispatch:
+    inputs:
+      year_month:
+        description: 'Year and month of the dataset'
+        required: true
+        default: '2024_01'
+      mode:
+        description: 'Mode of the dataset'
+        required: true
+        default: 'mania'
+        type: choice
+        options:
+          - 'mania'
+          - 'taiko'
+          - 'catch'
+          - 'osu'
+      version:
+        description: 'Version of the dataset'
+        required: true
+        default: 'top_1000'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.11
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install sqlalchemy[pymysql] numpy pandas tqdm
+
+      - name: Run osu-data
+        run: |
+          python -m osu_data.main \
+          -m ${{ inputs.mode }} \
+          -v ${{ inputs.version }} \
+          -ym ${{ inputs.year_month }}
+
+      - name: Run create_dataset
+        run: python -m osu_dataset.create_dataset
+
+      - name: Run export_dataset
+        run: python -m osu_dataset.export_dataset
+
+      - name: Create Release
+        id: create_release
+        uses: ncipollo/release-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          artifacts: "osu.tar.bz2"
+          tag: ${{ inputs.year_month }}_${{ inputs.version }}_${{ inputs.mode }}
+          name: Release ${{ inputs.year_month }}_${{ inputs.version }}_${{ inputs.mode }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
