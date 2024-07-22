@@ -21,8 +21,6 @@ on:
         description: 'Version of the dataset'
         required: true
         default: 'top_1000'
-  push:
-
 
 jobs:
   build:
