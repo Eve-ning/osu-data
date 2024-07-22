@@ -11,6 +11,7 @@ on:
         description: 'Mode of the dataset'
         required: true
         default: 'mania'
+        type: choice
         options:
           - 'mania'
           - 'taiko'
