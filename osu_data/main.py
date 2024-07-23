@@ -87,7 +87,7 @@ def main():
 
     db_url = (
         f"https://data.ppy.sh/"
-        f"{args.year_month_day}_01_performance_"
+        f"{args.year_month_day}_performance_"
         f"{args.mode}_"
         f"{args.version}.tar.bz2"
     )
