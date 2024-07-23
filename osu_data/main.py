@@ -36,6 +36,7 @@ def main():
         "--year-month-day",
         type=str,
         help=f"Year, Month, Day of the Dataset as YYYY_MM_DD. ",
+        required=True,
     )
     parser.add_argument(
         "-p",
