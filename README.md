@@ -1,6 +1,6 @@
 # osu! Data on Docker
 
-`pip install osu-data; osu-data -m mania -v top_1000 -ym YYYY_MM`
+`pip install osu-data; osu-data -m mania -v top_1000 -ymd YYYY_MM_DD`
 
 **Docker must be installed and running on your machine.**
 
@@ -22,10 +22,8 @@ Recreate the MySQL Service if you changed the data used.
     - `-v`, `--version`:
       The database version. `top_1000`, `top_10000` or `random_10000`
 3) Optionally, specify:
-    - `-ym`, `--year_month`:
-      The year and month of the database in the format `YYYY_MM` Default uses
-      the latest. We recommend to specify this to avoid issues where the data
-      isn't ready on the start of each month.
+    - `-ymd`, `--year_month_day`:
+      The year, month, day of the database in the format `YYYY_MM_DD`
     - `-p`, `--port`:
       The port to expose MySQL on. Default is `3308`
     - `-f`, `--files`:
@@ -58,12 +56,12 @@ E.g.
 
 ```bash
 osu-data \
-  -m osu -v top_1000 -ym 2023_08 -p 3308 -f \
+  -m osu -v top_1000 -ymd 2023_08_01 -p 3308 -f \
   --beatmap-difficulty 
 ```
 
 - Download the top 1000 osu! standard beatmaps
-- from August 2023
+- from 1st August 2023 
 - expose MySQL on port 3308
 - download `.osu` files
 - include beatmap difficulty data
@@ -87,9 +85,9 @@ osu-data \
       preserved. To update the data, you must delete the whole compose project
       and try again.
 - **wget: server returned error: HTTP/1.1 404 Not Found**. This happens when
-  you try to pull a `YYYY_MM` that doesn't exist, and happens often when the
+  you try to pull a `YYYY_MM_DD` that doesn't exist, and happens often when the
   data isn't yet ready on the start of each month.
-  Check on https://data.ppy.sh/ to see which `YYYY_MM` are available.
+  Check on https://data.ppy.sh/ to see which `YYYY_MM_DD` are available.
 - **`rm: can't remove '../osu.mysql.init/*'`**: This is safe to ignore.
 - **MySQL Credentials**. By default, the MySQL doesn't have a password, so just
   use `root` as the username and leave the password blank.
@@ -112,3 +110,14 @@ we recommend to set this up from this Git repo, and tweak `mysql.cnf`.
    Tweak `mysql.cnf` after importing
    for more MySQL customizations.
 3) Finally, be mindful on conclusions you make from the data.
+
+## Changelog
+
+- **0.1.5**:
+  - Allowed wider range of Python versions `3.9 ~ 4.0`.
+- **0.2.0**: 
+  - Added GitHub Actions to automatically create dataset on workflow dispatch. 
+  - Year, Month specification is now Year, Month, Day because some data dumps 
+    don't fall exactly on day 1.
+    - `-ym` -> `-ymd`, `--year-month` -> `--year-month-day`
+    - Default of `-ymd` is removed to encourage users to check source of data.

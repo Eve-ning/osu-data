@@ -2,7 +2,6 @@ import argparse
 import logging
 import os
 import subprocess
-from datetime import datetime
 from pathlib import Path
 
 THIS_DIR = Path(__file__).parent
@@ -16,7 +15,6 @@ def main():
                     "loaded into the MySQL database.",
     )
 
-    current_yyyy_mm = datetime.now().strftime("%Y_%m")
     parser.add_argument(
         "-m",
         "--mode",
@@ -34,12 +32,10 @@ def main():
         required=True,
     )
     parser.add_argument(
-        "-ym",
-        "--year-month",
+        "-ymd",
+        "--year-month-day",
         type=str,
-        help=f"Year and Month of the Dataset as YYYY_MM. "
-             f"Defaults: {current_yyyy_mm}",
-        default=f"{current_yyyy_mm}",
+        help=f"Year, Month, Day of the Dataset as YYYY_MM_DD. ",
     )
     parser.add_argument(
         "-p",
@@ -90,11 +86,11 @@ def main():
 
     db_url = (
         f"https://data.ppy.sh/"
-        f"{args.year_month}_01_performance_"
+        f"{args.year_month_day}_01_performance_"
         f"{args.mode}_"
         f"{args.version}.tar.bz2"
     )
-    files_url = f"https://data.ppy.sh/" f"{args.year_month}_01_osu_files.tar.bz2"
+    files_url = f"https://data.ppy.sh/{args.year_month_day}_osu_files.tar.bz2"
 
     os.environ["DB_URL"] = db_url
     os.environ["FILES_URL"] = files_url

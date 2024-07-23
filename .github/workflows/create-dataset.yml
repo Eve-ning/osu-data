@@ -3,10 +3,10 @@ name: Create and export dataset
 on:
   workflow_dispatch:
     inputs:
-      year_month:
-        description: 'Year and month of the dataset'
+      year_month_day:
+        description: 'Year, month, day of the dataset as YYYY_MM_DD'
         required: true
-        default: '2024_01'
+        default: '2024_01_01'
       mode:
         description: 'Mode of the dataset'
         required: true
@@ -53,7 +53,7 @@ jobs:
           nohup python -m osu_data.main \
             -m ${{ inputs.mode }} \
             -v ${{ inputs.version }} \
-            -ym ${{ inputs.year_month }} &
+            -ym ${{ inputs.year_month_day }} &
 
       - name: Healthcheck osu-data
         shell: bash
@@ -78,8 +78,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           artifacts: "osu.tar.bz2"
-          tag: ${{ inputs.year_month }}_${{ inputs.version }}_${{ inputs.mode }}
-          name: Release ${{ inputs.year_month }}_${{ inputs.version }}_${{ inputs.mode }}
+          tag: ${{ inputs.year_month_day }}_${{ inputs.version }}_${{ inputs.mode }}
+          name: Release ${{ inputs.year_month_day }}_${{ inputs.version }}_${{ inputs.mode }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup tmate session
