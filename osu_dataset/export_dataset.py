@@ -35,7 +35,7 @@ def main():
         'mid': 'uint16',
         'accuracy': 'float32',
     })
-    df_map_cast.to_sql('osu_map', sqlite_engine, if_exists='replace', )
+    df_map_cast.to_sql('osu', sqlite_engine, if_exists='replace', index=False)
 
     # Open a new tarfile in write mode with bzip2 compression
     with tarfile.open(TARBALL_PATH, 'w:bz2') as tar:

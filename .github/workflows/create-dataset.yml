@@ -63,16 +63,12 @@ jobs:
 
       - name: Run create_dataset
         run: |
-          sleep 30
-          docker restart osu.mysql
-          sleep 30
+          sleep 10
           python -m osu_dataset.create_dataset
 
       - name: Run export_dataset
         run: |
-          sleep 30
-          docker restart osu.mysql
-          sleep 30
+          sleep 10
           python -m osu_dataset.export_dataset
 
       - name: Create Release
