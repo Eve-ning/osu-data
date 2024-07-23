@@ -7,7 +7,7 @@ do
   # Check if osu-data is running
   if docker ps --format '{{.Names}}' | grep -q "^osu.mysql$"; then
     # Check if MySQL is ready
-    if docker logs osu.mysql 2>&1 | grep -q "/usr/sbin/mysqld: ready for connections"; then
+    if docker logs osu.mysql 2>&1 | grep -q "ready for connections.*port: 3308"; then
       exit 0
     fi
   fi
