@@ -61,6 +61,8 @@ jobs:
 
       - name: Debugging with tmate
         uses: mxschmitt/action-tmate@v3.18
+        with:
+          limit-access-to-actor: false
 
       - name: Run create_dataset
         run: |
