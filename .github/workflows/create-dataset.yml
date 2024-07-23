@@ -53,25 +53,11 @@ jobs:
             -v ${{ inputs.version }} \
             -ym ${{ inputs.year_month }} &
 
-      - name: Wait for osu-data to finish
+      - name: Healthcheck osu-data
         shell: bash
         run: |
-          max_attempts=${{ inputs.number_of_attempts }}
-          attempt=0
-          while ((attempt < max_attempts))
-          do
-            # Check if osu-data is running
-            if docker ps --format '{{.Names}}' | grep -q "^osu.mysql$"; then
-              # Check if MySQL is ready
-              if docker logs osu.mysql 2>&1 | grep -q "/usr/sbin/mysqld: ready for connections"; then
-                exit 0
-              fi
-            fi
-            echo "Waiting for MySQL to be ready... Attempt $attempt of $max_attempts"
-            sleep 10
-            ((attempt++))
-          done          
-          exit 1
+          chmod +x ./osu_dataset/check_mysql_ready.sh
+          ./osu_dataset/check_mysql_ready.sh ${{ inputs.number_of_attempts }}
 
       - name: Run create_dataset
         run: python -m osu_dataset.create_dataset
