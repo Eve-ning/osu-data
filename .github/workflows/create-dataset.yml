@@ -60,10 +60,14 @@ jobs:
           ./osu_dataset/check_mysql_ready.sh ${{ inputs.number_of_attempts }}
 
       - name: Run create_dataset
-        run: python -m osu_dataset.create_dataset
+        run: |
+          docker restart osu.mysql
+          python -m osu_dataset.create_dataset
 
       - name: Run export_dataset
-        run: python -m osu_dataset.export_dataset
+        run: |
+          docker restart osu.mysql
+          python -m osu_dataset.export_dataset
 
       - name: Create Release
         id: create_release
