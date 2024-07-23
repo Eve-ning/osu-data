@@ -59,6 +59,9 @@ jobs:
           chmod +x ./osu_dataset/check_mysql_ready.sh
           ./osu_dataset/check_mysql_ready.sh ${{ inputs.number_of_attempts }}
 
+      - name: Debugging with tmate
+        uses: mxschmitt/action-tmate@v3.18
+
       - name: Run create_dataset
         run: |
           docker restart osu.mysql
