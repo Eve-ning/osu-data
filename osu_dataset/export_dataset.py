@@ -28,14 +28,7 @@ def main():
         df[['uid', 'keys', 'speed', 'mid', 'accuracy']]
         .drop_duplicates().reset_index(drop=True)
     )
-    df_map_cast = df_map.astype({
-        'uid': 'uint16',
-        'keys': 'uint8',
-        'speed': 'uint8',
-        'mid': 'uint16',
-        'accuracy': 'float32',
-    })
-    df_map_cast.to_sql('osu', sqlite_engine, if_exists='replace', index=False)
+    df_map.to_sql('osu', sqlite_engine, if_exists='replace', index=False)
 
     # Open a new tarfile in write mode with bzip2 compression
     with tarfile.open(TARBALL_PATH, 'w:bz2') as tar:
