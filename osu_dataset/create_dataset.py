@@ -118,7 +118,8 @@ def write_dataset(df, conn):
 
 
 def create_dataset():
-    conn = create_engine(CONN_STR)
+    conn = create_engine(CONN_STR, pool_pre_ping=True, pool_recycle=280,
+                         pool_timeout=300)
     t = tqdm(total=6)
 
     t.set_description("Reading maps")

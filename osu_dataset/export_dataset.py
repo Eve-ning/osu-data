@@ -12,7 +12,12 @@ def main():
     TARBALL_PATH = Path('osu.tar.bz2')
     TABLE = 'osu_dataset'
 
-    mysql_engine = create_engine(CONN_STR)
+    mysql_engine = create_engine(
+        CONN_STR,
+        pool_pre_ping=True,
+        pool_recycle=280,
+        pool_timeout=300
+    )
     if SQLITE_PATH.exists():
         SQLITE_PATH.unlink()
     sqlite_engine = sqlite3.connect(SQLITE_PATH)
