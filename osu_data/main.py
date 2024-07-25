@@ -11,8 +11,8 @@ logger = logging.getLogger(__name__)
 def main():
     parser = argparse.ArgumentParser(
         description="Spin up osu! Data on Docker. Any argument after FILES "
-                    "are booleans that determine if the SQL file should be "
-                    "loaded into the MySQL database.",
+        "are booleans that determine if the SQL file should be "
+        "loaded into the MySQL database.",
     )
 
     parser.add_argument(
@@ -75,8 +75,9 @@ def main():
     parser.add_argument("--sample-users", **opt_kwargs("false"))
     parser.add_argument("--counts", **opt_kwargs("false"))
     parser.add_argument("--difficulty-attribs", **opt_kwargs("false"))
-    parser.add_argument("--beatmap-performance-blacklist",
-                        **opt_kwargs("false"))
+    parser.add_argument(
+        "--beatmap-performance-blacklist", **opt_kwargs("false")
+    )
     args = parser.parse_args()
 
     logger.info(
@@ -143,5 +144,5 @@ def main():
         )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
