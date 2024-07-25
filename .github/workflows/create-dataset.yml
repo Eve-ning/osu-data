@@ -67,13 +67,13 @@ jobs:
       - name: Create Dataset and Export
         run: |
           sleep 10
-          python -m osu_dataset.create_dataset ${{ env.TAG_NAME }}.tar.bz2
+          python -m osu_dataset.create_dataset ${{ env.DATASET_NAME }}.tar.bz2
 
       - name: Create Release
         id: create_release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: ${{ env.TAG_NAME }}.tar.bz2
+          artifacts: ${{ env.DATASET_NAME }}.tar.bz2
           tag: ${{ env.DATASET_NAME }}
           name: Release ${{ env.DATASET_NAME }}
           token: ${{ secrets.GITHUB_TOKEN }}
