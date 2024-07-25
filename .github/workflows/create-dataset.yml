@@ -72,13 +72,11 @@ jobs:
       - name: Create Release
         id: create_release
         uses: ncipollo/release-action@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          artifacts: "osu.tar.bz2"
+          artifacts: ${{ env.TAG_NAME }}.tar.bz2
           tag: ${{ env.DATASET_NAME }}
           name: Release ${{ env.DATASET_NAME }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup tmate session
         if: ${{ failure() }}
