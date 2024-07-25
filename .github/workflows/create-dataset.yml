@@ -1,4 +1,5 @@
-name: Create and export dataset
+name: Create and Export dataset
+
 
 on:
   workflow_dispatch:
@@ -8,7 +9,7 @@ on:
         required: true
         default: '2024_01_01'
       mode:
-        description: 'Mode of the dataset'
+        description: 'Mode of the dataset. (Only mania works)'
         required: true
         default: 'mania'
         type: choice
@@ -28,10 +29,12 @@ on:
         default: 100
 
 jobs:
-  build:
+  create-dataset:
     permissions:
       contents: write
     runs-on: ubuntu-latest
+    env:
+      DATASET_NAME: ${{ inputs.year_month_day }}_${{ inputs.version }}_${{ inputs.mode }}
 
     steps:
       - name: Checkout code
@@ -61,15 +64,10 @@ jobs:
           chmod +x ./osu_dataset/check_mysql_ready.sh
           ./osu_dataset/check_mysql_ready.sh ${{ inputs.number_of_attempts }}
 
-      - name: Run create_dataset
+      - name: Create Dataset and Export
         run: |
           sleep 10
-          python -m osu_dataset.create_dataset
-
-      - name: Run export_dataset
-        run: |
-          sleep 10
-          python -m osu_dataset.export_dataset
+          python -m osu_dataset.create_dataset ${{ env.TAG_NAME }}.tar.bz2
 
       - name: Create Release
         id: create_release
@@ -78,8 +76,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           artifacts: "osu.tar.bz2"
-          tag: ${{ inputs.year_month_day }}_${{ inputs.version }}_${{ inputs.mode }}
-          name: Release ${{ inputs.year_month_day }}_${{ inputs.version }}_${{ inputs.mode }}
+          tag: ${{ env.DATASET_NAME }}
+          name: Release ${{ env.DATASET_NAME }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup tmate session
