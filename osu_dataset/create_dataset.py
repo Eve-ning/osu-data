@@ -1,6 +1,7 @@
 import argparse
 import logging
 import tarfile
+from datetime import datetime
 from pathlib import Path
 
 import numpy as np
@@ -92,9 +93,10 @@ def read_plays(conn, score_threshold=600000):
                 np.where((x.enabled_mods & (1 << 8)) > 0, -1, 0),
             )
         ),
-        year=lambda x: x.date.dt.year,
+        days_since_epoch=lambda x: (df["date"] - datetime(1970, 1, 1)).dt.days,
+        # recover using: pd.to_datetime(x, unit="D")
     )[
-        ["mid", "uid", "accuracy", "speed", "year"]
+        ["mid", "uid", "accuracy", "speed", "days_since_epoch"]
     ]
 
 
