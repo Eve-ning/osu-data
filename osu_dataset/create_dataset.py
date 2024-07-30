@@ -93,7 +93,7 @@ def read_plays(conn, score_threshold=600000):
                 np.where((x.enabled_mods & (1 << 8)) > 0, -1, 0),
             )
         ),
-        days_since_epoch=lambda x: (df["date"] - datetime(1970, 1, 1)).dt.days,
+        days_since_epoch=lambda x: (x["date"] - datetime(1970, 1, 1)).dt.days,
         # recover using: pd.to_datetime(x, unit="D")
     )[
         ["mid", "uid", "accuracy", "speed", "days_since_epoch"]
